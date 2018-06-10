@@ -28,7 +28,7 @@ function fishingz
     function fishingz::DB::load_settings
 
       # It represents how many times fishingz is updated when it is updated
-      set -g    FISHINGZ_DB_REBUILD_THLD    2
+      set -g    FISHINGZ_DB_REBUILD_THLD    50
       set -g    FISHINGZ_HISTSIZE           10
 
       # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
@@ -61,7 +61,8 @@ function fishingz
       set -g    FISHINGZ_EXCLUDE_DIR        "-o -name '.git'"     \
                                             "-o -name '.cache'"   \
                                             "-o -name '.svn'"     \
-                                            "-o -name '.CVS'"
+                                            "-o -name '.CVS'"     \
+                                            ""    # End of list
 
       set -g    FISHINGZ_DB_PID            $FISHINGZ_PID
       set -g    FISHINGZ_DB_TMPDIR         $FISHINGZ_WORKDIR
