@@ -83,5 +83,13 @@ Searching directories ... [37939]
 Searching files ....  [235502]
 Searching symbolic links ....  [58027]
 ```  
-  
+
+## <img src="http://placehold.jp/24/39aaff/ffffff/240x40.png?text=Demo">
+### :blowfish: ホームディレクトリから /etc/apache2/sites-available/000-default.conf.d に移動する
+|||
+|---|---|
+|C-u C-u 実行|
+||![fishingz_1](https://user-images.githubusercontent.com/39640214/41202833-d7a26808-6d09-11e8-85a4-bcfc6effaaed.jpg)||
+
+  |---|---|
 
