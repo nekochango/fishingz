@@ -51,8 +51,7 @@ fishingz を使うためには以下のソフトが必要です。
  　
 ## <img src="http://placehold.jp/24/39aaff/ffffff/240x40.png?text=Setup">
 ### :tropical_fish:　1.　ショートカットキーと fishingz を関連付ける
-以下の要領で Fish の fish_user_key_bindings.fish ファイルにキーバインディングを定義してください。
-
+以下の要領で Fish の fish_user_key_bindings.fish ファイルにキーバインディングを定義してください。  
 例) Ctrl-u Ctrl-u と fishingz コマンドを関連付ける場合  
 　
 ***$HOME/.config/fish/functions/fish_user_key_bindings.fish***  
@@ -70,7 +69,8 @@ fishingz を使うためには以下のソフトが必要です。
         bind \eC '__fzf_cd --hidden'
 (-- snip --)
 ```
-  
+　
+　
 ### :tropical_fish:　2. PathDB を作成する
 次にファイルシステム全体のパスを収集しファイルに保存します。  
 デフォルトの保存先は $HOME/.fishingz/ 以下です。  
