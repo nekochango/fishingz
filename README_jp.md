@@ -85,11 +85,13 @@ Searching symbolic links ....  [58027]
 ```  
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/240x40.png?text=Demo">
-### :blowfish: ホームディレクトリから /etc/apache2/sites-available/000-default.conf.d に移動する
+　
+### :blowfish: $HOME から /etc/apache2/sites-available/000-default.conf.d に移動する
+　
 |||
 |---|---|
-|C-u C-u 実行|
-||![fishingz_1](https://user-images.githubusercontent.com/39640214/41202833-d7a26808-6d09-11e8-85a4-bcfc6effaaed.jpg)||
+|&#36;HOMEでC&#45;u C&#45;uを実行する|![fishingz_1](https://user-images.githubusercontent.com/39640214/41203061-26f782b4-6d0d-11e8-8db7-11613306e2bb.jpg)
+|絞り込む|![fishingz_1](https://user-images.githubusercontent.com/39640214/41202833-d7a26808-6d09-11e8-85a4-bcfc6effaaed.jpg)||
+|選択する|&#91;d&#93;  /etc/apache2/sites-available/000-default.conf.d |
 
-  |---|---|
 
