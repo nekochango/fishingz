@@ -9,7 +9,7 @@ fishingz は fzf を使った fish shell 専用のプラグインです。
 
 ### :fish: 1　選択したパスに対してアクションを実行する
 fzf ウィンドウに表示されたシステム全てのパスに対して以下のアクションを実行します。  
-丁度、Vim の Unite, Emacs の Anything のようなイメージです。  
+Vim の Unite, Emacs の Anything のようなイメージです。  
 
 ```diff
 + ディレクトリであれば cd を実行して移動する  
