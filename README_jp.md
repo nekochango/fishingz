@@ -87,11 +87,30 @@ Searching symbolic links ....  [58027]
 ## <img src="http://placehold.jp/24/39aaff/ffffff/240x40.png?text=Demo">
 　
 ### :blowfish: $HOME から /etc/apache2/sites-available/000-default.conf.d に移動する
+
+fishingz は事前にファイルシステム全体のパス情報を取得しているので、ファイルシステムをまたいで移動することが可能である。  
+今回の例ではディレクトリの移動であるが、ファイルやシンボリックリンクについても同じ要領で実行できる。  
 　
-|||
+|表示|C-u C-u を実行する<br>行頭[d]がディレクトリである。<br>行頭[H]がfishingzで直近実行したコマンドである。<br>色設定は fishingz.fish で定義しているので必要に応じて変える。|
+|---|:--|
+|　　|![fishingz_1](https://user-images.githubusercontent.com/39640214/41203061-26f782b4-6d0d-11e8-8db7-11613306e2bb.jpg)|
+
+|抽出|fzf により絞り込みを行う<br>行頭[f]がファイルである。<br>行頭[l]がシンボリックリンクである。|
+|---|:--|
+|　　|![fishingz_1](https://user-images.githubusercontent.com/39640214/41202833-d7a26808-6d09-11e8-85a4-bcfc6effaaed.jpg)|
+
+|決定|該当行で Enter キーを押下する。<br/>このときに今回実行したコマンドが次に [H]として表示される。|
+|---|:--|
+|　　|![fishingz_1 5](https://user-images.githubusercontent.com/39640214/41203287-ece6163c-6d0f-11e8-9d32-16581cf49c97.jpg)|
+
+|完了後|次に C-u C-u を実行すると以下のように <b>[H]  cd /etc/apache2/sites-available/000-default.conf.d</b>が登録されている。|
 |---|---|
-|&#36;HOMEでC&#45;u C&#45;uを実行する|![fishingz_1](https://user-images.githubusercontent.com/39640214/41203061-26f782b4-6d0d-11e8-8db7-11613306e2bb.jpg)
-|絞り込む|![fishingz_1](https://user-images.githubusercontent.com/39640214/41202833-d7a26808-6d09-11e8-85a4-bcfc6effaaed.jpg)||
-|選択する|&#91;d&#93;  /etc/apache2/sites-available/000-default.conf.d |
+||![fishingz_1 8](https://user-images.githubusercontent.com/39640214/41203500-d1005b32-6d12-11e8-93dd-20849ea3c6c7.png)|
+　
+### :blowfish: $HOME から /etc/apache2/sites-available/000-default.conf.d に移動する
+　
+grep や cp などの引数としてパスが必要になることが多々ある。  
+そこで、fishingz では上記「表示」中に Ctrl-e を押下することでクリップボードにパスを保存することができる。  
+そして、コマンドラインに戻るので、Shift - Insert で貼り付けすることも可能である。 
 
 
