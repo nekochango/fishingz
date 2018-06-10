@@ -32,7 +32,7 @@ Unite (Vim) の Source に該当する部分です。
 ```
 　
 　
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install & Setup">
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install_and_Setup">
 
 ### :tropical_fish:　1.　Git を使ってインストールする
 ```console  
