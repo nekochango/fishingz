@@ -71,7 +71,7 @@ fishingz を使うためには以下のソフトが必要です。
 ```
 　
 　
-### :tropical_fish:　2. PathDB を作成する
+### :tropical_fish:　2. パス情報ファイルを作成する
 次にファイルシステム全体のパスを収集しファイルに保存します。  
 デフォルトの保存先は $HOME/.fishingz/ 以下です。  
 ```console  
