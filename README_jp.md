@@ -50,10 +50,10 @@ fishingz を使うためには以下のソフトが必要です。
 ```  
 
 ### :tropical_fish:　2.　ショートカットキーと fishingz を関連付ける
-$HOME/.config/fish/functions/fish_user_key_bindings.fish に追記してください。
+以下の要領で Fish の fish_user_key_bindings.fish ファイルにキーバインディングを定義してください。
 
 例) Ctrl-u Ctrl-u と fishingz コマンドを関連付ける場合  
-
+　
 ***$HOME/.config/fish/functions/fish_user_key_bindings.fish***  
 ```diff
   function fish_user_key_bindings  
