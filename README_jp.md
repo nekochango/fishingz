@@ -41,12 +41,12 @@ cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.
 ```  
 　
 fishingz を使うためには以下のソフトが必要です。  
-　　　**必要なソフトウェア**
+**必要なソフトウェア**
 ```diff
-+ 　　　　fish
-+ 　　　　fzf  
-+ 　　　　tac
-+ 　　　　xclip もしくは xsel (必須ではない)
++ 　　　fish
++ 　　　fzf  
++ 　　　tac
++ 　　　xclip もしくは xsel (必須ではないが、無ければ使用できない機能がある)
 ```  
 
 ### :tropical_fish:　2.　ショートカットキーと fishingz を関連付ける
