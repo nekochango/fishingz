@@ -41,12 +41,12 @@ cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.
 ```  
 　
 fishingz を使うためには以下のソフトが必要です。
-#### 必要なソフトウェア
+#### 　　必要なソフトウェア
 ```diff
-+ fish
-+ fzf  
-+ tac
-+ xclip もしくは xsel (必須ではない)
++ 　　　　fish
++ 　　　　fzf  
++ 　　　　tac
++ 　　　　xclip もしくは xsel (必須ではない)
 ```  
 
 ### :tropical_fish:　2.　ショートカットキーと fishingz を関連付ける
@@ -58,7 +58,16 @@ $HOME/.config/fish/functions/fish_user_key_bindings.fish に追記してくだ�
 ```diff
   function fish_user_key_bindings  
     ### fishingz ###  
-+   bind \cu\cu 'fishingz'  
++   bind \cu\cu 'fishingz' 
+
+    fzf_key_bindings
+    ### fzf ###
+    if test "$FZF_LEGACY_KEYBINDINGS" -eq 1
+        bind \ct '__fzf_find_file'
+        bind \cr '__fzf_reverse_isearch'
+        bind \ec '__fzf_cd'
+        bind \eC '__fzf_cd --hidden'
+(-- snip --)
 ```
   
 ### :tropical_fish:　3. PathDB を作成する
