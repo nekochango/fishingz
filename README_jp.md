@@ -17,7 +17,6 @@ Vim の Unite, Emacs の Anything のようなイメージです。
 + パスをクリップボードにコピーする  
 ```
 　
-　
 ### :fish: 2　パス収集を自動で行う    
 ファイルシステム全体に対してパスの収集を行いファイルに出力します。  
 Unite (Vim) の Source に該当する部分です。
@@ -32,9 +31,9 @@ Unite (Vim) の Source に該当する部分です。
 ```
 　
 　
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install_and_Setup">
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install">
 
-### :tropical_fish:　1.　Git を使ってインストールする
+### :tropical_fish:　　Git を使ってインストールする
 ```console  
 git clone https://nekochango@github.com/nekochango/fishingz  
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
@@ -48,8 +47,10 @@ fishingz を使うためには以下のソフトが必要です。
 + 　　　tac
 + 　　　xclip もしくは xsel (必須ではないが、無ければ使用できない機能がある)
 ```  
-
-### :tropical_fish:　2.　ショートカットキーと fishingz を関連付ける
+　
+ 　
+## <img src="http://placehold.jp/24/39aaff/ffffff/240x40.png?text=Setup">
+### :tropical_fish:　1.　ショートカットキーと fishingz を関連付ける
 以下の要領で Fish の fish_user_key_bindings.fish ファイルにキーバインディングを定義してください。
 
 例) Ctrl-u Ctrl-u と fishingz コマンドを関連付ける場合  
@@ -70,8 +71,9 @@ fishingz を使うためには以下のソフトが必要です。
 (-- snip --)
 ```
   
-### :tropical_fish:　3. PathDB を作成する
-次にファイルシステム全体のパスを収集した PathDB を作成します。  
+### :tropical_fish:　2. PathDB を作成する
+次にファイルシステム全体のパスを収集しファイルに保存します。  
+デフォルトの保存先は $HOME/.fishingz/ 以下です。  
 ```console  
 fishingz -i
 ```
