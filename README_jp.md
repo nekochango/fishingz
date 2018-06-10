@@ -40,7 +40,7 @@ git clone https://nekochango@github.com/nekochango/fishingz
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
 ```  
 　
-fishingz を使うためには以下のソフトが必要です。
+fishingz を使うためには以下のソフトが必要です。  
 　　　**必要なソフトウェア**
 ```diff
 + 　　　　fish
