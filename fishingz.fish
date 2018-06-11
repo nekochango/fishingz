@@ -16,7 +16,7 @@ function fishingz
     # execute it, if it have +x permission
     set -g    FISHINGZ_TOGGLE_EXEC_MODE     0     # 1:execute, 0: not execute
 
-    set -g    FISHINGZ_PID                  %self                             # Don't REMOVE
+    set -g    FISHINGZ_PID                  (uuidgen)
     set -g    FISHINGZ_WORKDIR              /tmp/$USER.fishingz/$FISHINGZ_PID # Don't REMOVE
     set -g    FISHINGZ_AVATAR                                                 # Don't REMOVE
 
@@ -28,7 +28,7 @@ function fishingz
     function fishingz::DB::load_settings
 
       # It represents how many times fishingz is updated when it is updated
-      set -g    FISHINGZ_DB_REBUILD_THLD    50
+      set -g    FISHINGZ_DB_REBUILD_THLD    0
       set -g    FISHINGZ_HISTSIZE           10
 
       # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
@@ -66,7 +66,6 @@ function fishingz
 
       set -g    FISHINGZ_DB_PID            $FISHINGZ_PID
       set -g    FISHINGZ_DB_TMPDIR         $FISHINGZ_WORKDIR
-      set -g    FISHINGZ_DB_TMPDIR_STASH   $FISHINGZ_DB_TMPDIR/stash
       set -g    FISHINGZ_DB_NAME           (basename (status -f))
       set -g    FISHINGZ_DB_MODE           "I"
   
@@ -90,7 +89,7 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.0.0
+      set -g    FISHINGZ_DB_VERSION        1.1.0
   
     end   # End of 'fishingz::DB::load_settings'
   
@@ -220,6 +219,12 @@ function fishingz
     --description "When the threshold is exceeded, the database is updated." \
     --description "This threshold is held in $FISHINGZ_DB_REBUILD_THLD."
   
+      # If there is no threshold or 0.
+      if test -z "$FISHINGZ_DB_REBUILD_THLD" ;or test "$FISHINGZ_DB_REBUILD_THLD" = 0
+        rm -f $FISHINGZ_AVATAR
+        return 0
+      end
+
       echo (date "+%s") >> $FISHINGZ_DB_CALLS
       set -l cur ( cat $FISHINGZ_DB_CALLS 2>/dev/null | wc -l )
       set -l mod ( echo "$cur % $FISHINGZ_DB_REBUILD_THLD" | bc )
@@ -397,6 +402,10 @@ function fishingz
           and mkdir -p (dirname $FISHINGZ_DB_MRU_PATH)
         touch $FISHINGZ_DB_MRU_PATH
   
+        # mmkdir the directory that stores thresholds used for automatic update or judgment.
+        test ! -d (dirname $FISHINGZ_DB_CALLS) ;
+          and mkdir -p (dirname $FISHINGZ_DB_CALLS)
+
       end   # fn_db_init
 
       
@@ -642,7 +651,8 @@ function fishingz
     end
     
     function fn_stop
-      fishingz::DB -m "$argv"
+      test ! -z "$argv" ;and fishingz::DB -m "$argv"
+      rm -rf $FISHINGZ_WORKDIR
       echo -en "\r"
       fish_prompt
       echo -n  ' '
@@ -651,14 +661,16 @@ function fishingz
   
     if test "$argv" = '--init-only'
       fn_init $argv
-      return 0
+    else if test "$argv" = "--stop-only"
+      fn_stop
+    else
+      # initializing on fishingz
+      fn_init  $argv
+      fn_setup $argv
+      fn_start $argv
+      fn_stop  $ptr_EXECLINE
     end
 
-    # initializing on fishingz
-    fn_init  $argv
-    fn_setup $argv
-    fn_start $argv
-    fn_stop  $ptr_EXECLINE
   end   # End of 'function fishingz::do_pipeline'
 
   if test -z "$argv[1]"
@@ -666,6 +678,7 @@ function fishingz
   else if test $argv[1] = "-i" ;or test $argv[1] = "--init"
       fishingz::do_pipeline --init-only
       fishingz::DB $argv
+      fishingz::do_pipeline --stop-only
   end
 
 end   # End of 'func fishingz'
