@@ -1,20 +1,21 @@
 ## <img src="http://placehold.jp/28/39aaff/ffffff/180x40.png?text=fishingz">
-fishingz は fzf を使った fish shell 専用のプラグインです。  
-前提として fishingz は root権限を使わないことを想定して作成しています。  
+fishingz は fzf と fish shell を使った、fish 専用のプラグインです。  
+Vim の Unite, Emacs の Anything のようなイメージで、ファイルシステム全体にアクセスすることが可能です。  
+fishingz は root権限を使わないことを想定しています。  
 　
 　
 　
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=できること">
-大別すると次の 2点 を行います。  
+次の 2点 を行います。  
 
 ### :fish: 1　選択したパスに対してアクションを実行する
 fzf ウィンドウに表示されたシステム全てのパスに対して以下のアクションを実行します。  
-Vim の Unite, Emacs の Anything のようなイメージです。  
-
+Unite (Vim) の Action に該当する部分です。
 ```diff
 + ディレクトリであれば cd を実行して移動する  
 + ファイルであれば 関連付けたエディタで開く  
-+ パスをクリップボードにコピーする  
++ シンボリックリンクであれば、ディレクトリかファイルかを判別して上記いずれかの処理を行う  
++ パスをクリップボードにコピーする    
 ```
 　
 ### :fish: 2　パス収集を自動で行う    
@@ -28,6 +29,7 @@ Unite (Vim) の Source に該当する部分です。
 - 初回のパス情報収集は手動で行う   
 + パス収集の2回目以降は自動的に収集される  
 + 自動更新のために cron, at などのタスクスケジューラを稼動させる必要はない
++ マシンスペックをフルに使うので、パス収集自体は速い
 ```
 　
 　
@@ -52,9 +54,11 @@ fishingz を使うためには以下のソフトが必要です。
 ## <img src="http://placehold.jp/24/39aaff/ffffff/240x40.png?text=Setup">
 ### :tropical_fish:　1.　ショートカットキーと fishingz を関連付ける
 以下の要領で Fish の fish_user_key_bindings.fish ファイルにキーバインディングを定義してください。  
+　  
 例) Ctrl-u Ctrl-u と fishingz コマンドを関連付ける場合  
-　
+　  
 ***$HOME/.config/fish/functions/fish_user_key_bindings.fish***  
+　  
 ```diff
   function fish_user_key_bindings  
     ### fishingz ###  
@@ -82,16 +86,17 @@ fishingz -i
 Searching directories ... [37939]
 Searching files ....  [235502]
 Searching symbolic links ....  [58027]
-```  
+```
+
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/240x40.png?text=Demo">
-　
+
 ### :blowfish: $HOME から /etc/apache2/sites-available/000-default.conf.d に移動する
 
 fishingz は事前にファイルシステム全体のパス情報を取得しているので、ファイルシステムをまたいで移動することが可能である。  
 今回の例ではディレクトリの移動であるが、ファイルやシンボリックリンクについても同じ要領で実行できる。  
 　
-|表示|C-u C-u を実行する<br>行頭[d]がディレクトリである。<br>行頭[H]がfishingzで直近実行したコマンドである。<br>色設定は fishingz.fish で定義しているので必要に応じて変える。|
+
 
 |表示|C-u C-u を実行する<br>行頭[d]がディレクトリである。<br>行頭[H]がfishingzで直近実行したコマンドである。<br>色設定は fishingz.fish で定義しているので必要に応じて変える。|
 |---|:--|
