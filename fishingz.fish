@@ -28,7 +28,7 @@ function fishingz
     function fishingz::DB::load_settings
 
       # It represents how many times fishingz is updated when it is updated
-      set -g    FISHINGZ_DB_REBUILD_THLD    0
+      set -g    FISHINGZ_DB_REBUILD_THLD    50
       set -g    FISHINGZ_HISTSIZE           10
 
       # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
@@ -496,10 +496,17 @@ function fishingz
         ls -ld $path
         return 0
       else
+        set -l oldlen ( string length $PWD  )
+        set -l newlen ( string length $path )
+        if test $oldlen -lt $newlen              # (pwd) < $path
+          echo -en "\r"
+          stty sane
+          echo >&2
+        else 
+          echo >&2
+          echo -en "\r"
+        end
         eval $FISHINGZ_D_CMD $path
-        fish_prompt
-        echo -en "\r"
-        echo -en "\r"
         set ptr_EXECLINE "$FISHINGZ_D_CMD $path"
       end
     end # End of 'fn_opr_d'
@@ -514,6 +521,17 @@ function fishingz
   
       switch $ftype
 
+        case "text/html*"
+          if test ( which google-chrome )
+            setsid google-chrome $path &
+            set ptr_EXECLINE "google-chrome $path"
+          else if test ( which firefox )
+            setsid firefox $path &
+            set ptr_EXECLINE "firefox $path"
+          else
+            eval $FISHINGZ_F_CMD $path ;
+            set ptr_EXECLINE "$FISHINGZ_F_CMD $path"
+          end
         case "text/*"
           if test -w $path 
             eval $FISHINGZ_F_CMD $path ;
