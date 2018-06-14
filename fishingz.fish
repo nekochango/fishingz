@@ -2,23 +2,29 @@
 
 function fishingz 
 
+  function fishingz::load_userfile
+    if test -f $HOME/.fishingz/init.fish
+      source $HOME/.fishingz/init.fish
+    end
+  end
+
   function fishingz::load_settings \
   --description "The command written here is called in 'fn_opr_f'."
 
     # command to call in the case of file
-    set -g    FISHINGZ_F_CMD              "nvim"
+    test -z "$FISHINGZ_F_CMD"             ;and set -g FISHINGZ_F_CMD   "nano"
     # command to call in the case of directory
-    set -g    FISHINGZ_D_CMD              "cd"
+    test -z "$FISHINGZ_D_CMD"             ;and set -g FISHINGZ_D_CMD   "cd"
     # command to use in the background to call in the case of directory
-#   set -g    FISHINGZ_JORKER             "xdg-open"
-    # use sudo, when you can not writ file
-    set -g    FISHINGZ_TOGGLE_USE_SUDO      1     # 1:use sudo, 0: not use
-    # execute it, if it have +x permission
-    set -g    FISHINGZ_TOGGLE_EXEC_MODE     0     # 1:execute, 0: not execute
+#   test -z "$FISHINGZ_JORKER"            ;and set -g FISHINGZ_JORKER "xdg-open"
+    # use sudo, when you can not writ file (1:use sudo, 0: not use)
+    test -z "$FISHINGZ_TOGGLE_USE_SUDO"   ;and set -g FISHINGZ_TOGGLE_USE_SUDO   0
+    # execute it, if it have +x permission (1:execute,  0: not execute)
+    test -z "$FISHINGZ_TOGGLE_EXEC_MODE"  ;and set -g FISHINGZ_TOGGLE_EXEC_MODE  0
 
-    set -g    FISHINGZ_PID                  (uuidgen)
-    set -g    FISHINGZ_WORKDIR              /tmp/$USER.fishingz/$FISHINGZ_PID # Don't REMOVE
-    set -g    FISHINGZ_AVATAR                                                 # Don't REMOVE
+    set -g    FISHINGZ_UUID                 (uuidgen)
+    set -g    FISHINGZ_WORKDIR              /tmp/$USER.fishingz/$FISHINGZ_UUID # Don't REMOVE
+    set -g    FISHINGZ_AVATAR                                                  # Don't REMOVE
 
   end   # End of 'fishingz::load_settings'
 
@@ -28,17 +34,17 @@ function fishingz
     function fishingz::DB::load_settings
 
       # It represents how many times fishingz is updated when it is updated
-      set -g    FISHINGZ_DB_REBUILD_THLD    50
-      set -g    FISHINGZ_HISTSIZE           10
+      test -z "$FISHINGZ_DB_REBUILD_THLD" ;and set -g  FISHINGZ_DB_REBUILD_THLD  50
+      test -z "$FISHINGZ_HISTSIZE"        ;and set -g  FISHINGZ_HISTSIZE         10
 
       # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
-      set -g    FISHINGZ_COLOR_D            32m       # [d] directory
-      set -g    FISHINGZ_COLOR_F            36m       # [f] file
-      set -g    FISHINGZ_COLOR_L            35m       # [l] symlink
-      set -g    FISHINGZ_COLOR_H            33m       # [H] MRU
+      test -z "$FISHINGZ_COLOR_D"   ;and  set -g  FISHINGZ_COLOR_D  32m       # [d] directory
+      test -z "$FISHINGZ_COLOR_F"   ;and  set -g  FISHINGZ_COLOR_F  36m       # [f] file
+      test -z "$FISHINGZ_COLOR_L"   ;and  set -g  FISHINGZ_COLOR_L  35m       # [l] symlink
+      test -z "$FISHINGZ_COLOR_H"   ;and  set -g  FISHINGZ_COLOR_H  33m       # [H] MRU
 
       # fzf color option's
-      set -g    FISHINGZ_FZF_COLOR          "--color=hl:#ff00b0,bg+:#666666"
+      test -z "$FISHINGZ_FZF_COLOR" ;and  set -g  FISHINGZ_FZF_COLOR "--color=hl:#ff00b0,bg+:#666666"
 
       # No searchable directories, when creating database
       set -g    FISHINGZ_EXCLUDE_FS         "/lost+found/" \
@@ -64,7 +70,7 @@ function fishingz
                                             "-o -name '.CVS'"     \
                                             ""    # End of list
 
-      set -g    FISHINGZ_DB_PID            $FISHINGZ_PID
+      set -g    FISHINGZ_DB_PID            $FISHINGZ_UUID
       set -g    FISHINGZ_DB_TMPDIR         $FISHINGZ_WORKDIR
       set -g    FISHINGZ_DB_NAME           (basename (status -f))
       set -g    FISHINGZ_DB_MODE           "I"
@@ -167,52 +173,117 @@ function fishingz
       --description "Rearrange based on character string"
   
         set -l index  $argv[1]
-  
-        if test ! -z $FISHINGZ_HISTSIZE
-          tail -n $FISHINGZ_HISTSIZE $FISHINGZ_DB_MRU_PATH | tac
+        set -l filter
+        set -l database
+        set -l color
+        set -l M 
+
+        if test -z "$argv[3]"
+          set   filter    ""
+        else if test ! -z "$argv[3]" 
+          set   filter    $argv[3]
         end
-  
-        if test ! -z "$index"
-          set -l M      ( egrep -n "\[d\]	$index\[0m" $FISHINGZ_DB_PATH | cut -f1 -d':' )
-          set -l B      
-  
+
+        if test -z "$filter"
+          # Display all types
+          set database  $FISHINGZ_DB_PATH
+          set M ( egrep -n "\[d\]	$index\[0m" $database | cut -f1 -d':' )
+          if test ! -z $FISHINGZ_HISTSIZE
+            tail -n $FISHINGZ_HISTSIZE $FISHINGZ_DB_MRU_PATH | tac
+          end
+
           if test -z "$M"
             # I am in a location that is not registered in the DB
-            cat $FISHINGZ_DB_PATH
+            cat $database
           else if test "$M" -eq 1
-            cat $FISHINGZ_DB_PATH
+            cat $database
           else if test "$M" -eq 2
-            sed -n '2,$'p $FISHINGZ_DB_PATH  
-            sed -n 1p     $FISHINGZ_DB_PATH  
+            sed -n '2,$'p $database  
+            sed -n 1p     $database  
           else
             set  B      ( expr $M - 1 ) # before from $M
-            sed -n "$M,\$"p  $FISHINGZ_DB_PATH | egrep    "\[.\]	$index" 
-            sed -n "$M,\$"p  $FISHINGZ_DB_PATH | egrep -v "\[.\]	$index" 
-            sed -n "1,$B"p   $FISHINGZ_DB_PATH | tac
+            sed -n "$M,\$"p  $database 
+            sed -n "1,$B"p   $database | tac
           end
+
         else
-          cat $FISHINGZ_DB_PATH
+          # Individually display
+          if test $filter = "--find-dir"
+            set database  $FISHINGZ_DB_DIR_PATH
+            test $argv[4] = "--ansi" ;and set color  $FISHINGZ_COLOR_D
+            set M ( grep -n -w "$index" $database | head -n1 | cut -f1 -d':' )
+          else if test $filter = "--find-file"
+            set database  $FISHINGZ_DB_FILE_PATH
+            test $argv[4] = "--ansi" ;and set color  $FISHINGZ_COLOR_F
+            set M ( grep -n -w "$index" $database | head -n1 | cut -f1 -d':' )
+          else if test $filter = "--find-link"
+            set database  $FISHINGZ_DB_LINK_PATH
+            test $argv[4] = "--ansi" ;and set color  $FISHINGZ_COLOR_L
+            set M ( grep -n -w "$index" $database | head -n1 | cut -f1 -d':' )
+          else if test $filter = "--find-mru"
+            set database  $FISHINGZ_DB_MRU_PATH
+          end
+
+          if test -z "$M"
+            # I am in a location that is not registered in the DB
+            test ! -z "$color" ;and sed "s/.*/[1;$color&[0m/g" $database 
+                               ;or  cat $database
+          else if test "$M" -eq 1
+            test ! -z "$color" ;and sed "s/.*/[1;$color&[0m/g" $database 
+                               ;or  cat $database
+          else if test "$M" -eq 2
+            if test ! -z "$color"
+              sed -n '2,$'p $database | sed "s/.*/[1;$color&[0m/g"       
+              sed -n 1p     $database | sed "s/.*/[1;$color&[0m/g" | tac 
+            else
+              sed -n '2,$'p $database  
+              sed -n 1p     $database  
+            end
+          else
+            if test ! -z "$color"
+              set  B      ( expr $M - 1 ) # before from $M
+              sed -n "$M,\$"p $database | sed "s/.*/[1;$color&[0m/g"
+              sed -n "1,$B"p  $database | sed "s/.*/[1;$color&[0m/g" | tac
+            else
+              set  B      ( expr $M - 1 ) # before from $M
+              sed -n "$M,\$"p  $database
+              sed -n "1,$B"p   $database | tac
+            end
+          end
         end
+
       end   # End of fn_db_sort
   
-      set -l  basepoint   
-      test ! -z "$argv[2]" ;and set basepoint $argv[2] ;or set basepoint (pwd)
-      if test ( which xclip )
-        set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
-                                  --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                  sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xclip )+abort' )
-      else if test ( which xsel )
-        set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
-                                  --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                  sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xsel -i )+abort' )
+      set -l  basepoint (pwd)
+
+      if test -z "$argv[3]"
+        if test ( which xclip )
+          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
+                                    --bind 'ctrl-e:execute-silent( echo -n {} | \
+                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xclip )+abort' )
+        else if test ( which xsel )
+          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
+                                    --bind 'ctrl-e:execute-silent( echo -n {} | \
+                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xsel -i )+abort' )
+        else
+          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort --ansi -d'\t' --nth 2 )
+        end
       else
-        set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort --ansi -d'\t' --nth 2 )
+        if test ( which xclip )
+          set ptr_RETURNED_PATH ( fn_db_sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
+                                    --bind 'ctrl-e:execute-silent( echo -n {} | xclip )+abort' )
+        else if test ( which xsel )
+          set ptr_RETURNED_PATH ( fn_db_sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
+                                    --bind 'ctrl-e:execute-silent( echo -n {} | xsel -i )+abort' )
+        else
+          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort --ansi )
+        end
       end
   
       test ! -z "$tmpf" ;and rm -f $tmpf
   
       #set ptr_RETURNED_PATH ( xclip -o | tr '\t' ' ' )
-    end
+    end   # End of function fishingz::DB::get_path
   
   
     function fishingz::DB::auto_rebuild \
@@ -471,7 +542,7 @@ function fishingz
       case  "-m"    # Update mru data
         fishingz::DB::do_pipeline --save-mru $argv
       case  "-g"    # Get path accessed by 'fishingz'
-        fishingz::DB::do_pipeline --get-path $arg[3]
+        fishingz::DB::do_pipeline --get-path $argv[2..-1]
     end
   
   end   # End of 'fishingz::db '
@@ -646,6 +717,7 @@ function fishingz
     set -l ptr_EXECLINE
   
     function fn_init
+      fishingz::load_userfile
       fishingz::load_settings
       fishingz::verify_settings
     end
@@ -662,8 +734,15 @@ function fishingz
       fishingz::DB -g $argv
 
       if test ! -z "$ptr_RETURNED_PATH"
-        set type   ( echo $ptr_RETURNED_PATH | cut -f1  -d'	')
-        set path   ( echo $ptr_RETURNED_PATH | cut -f2- -d'	')
+        if test -z "$argv[1]" ;or test "$argv[1]" = "--find-mru"  
+          set type   ( echo $ptr_RETURNED_PATH | cut -f1  -d'	')
+          set path   ( echo $ptr_RETURNED_PATH | cut -f2- -d'	')
+        else
+          test "$argv[1]" = "--find-dir"  ;and set type "[d]"
+          test "$argv[1]" = "--find-file" ;and set type "[f]"
+          test "$argv[1]" = "--find-link" ;and set type "[l]"
+          set path   ( echo $ptr_RETURNED_PATH )
+        end
         fishingz::command $type $path
       end
     end
@@ -692,11 +771,16 @@ function fishingz
   end   # End of 'function fishingz::do_pipeline'
 
   if test -z "$argv[1]"
-      fishingz::do_pipeline
+    fishingz::do_pipeline
+  else if   test "$argv[1]" = "--find-dir"  ;
+         or test "$argv[1]" = "--find-file" ;
+         or test "$argv[1]" = "--find-link" ;
+         or test "$argv[1]" = "--find-mru"
+    fishingz::do_pipeline $argv[1] --ansi
   else if test $argv[1] = "-i" ;or test $argv[1] = "--init"
-      fishingz::do_pipeline --init-only
-      fishingz::DB $argv
-      fishingz::do_pipeline --stop-only
+    fishingz::do_pipeline --init-only
+    fishingz::DB $argv
+    fishingz::do_pipeline --stop-only
   end
 
 end   # End of 'func fishingz'
