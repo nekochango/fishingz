@@ -52,7 +52,7 @@ cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.
 fishingz を使うためには以下のソフトが必要です。  
 **必要なソフトウェア**
 ```diff
-+ 　　　fish
++ 　　　fish (2.7 以上を推奨する)
 + 　　　fzf  
 + 　　　tac
 + 　　　xclip もしくは xsel (必須ではないが、無ければ使用できない機能がある)
