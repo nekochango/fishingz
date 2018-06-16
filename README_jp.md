@@ -149,14 +149,17 @@ Searching symbolic links ....  [58027]
 ユーザによって異なる設定を行う。設定ファイルは HOME/.fishingz/init.fish である。
 
 ***$HOME/.fishingz/init.fish***
-+ FISHINGZ_F_CMD：ファイルの場合のアクションであり、下記の場合は nvim を登録している。
-+ FISHINGZ_F_HTML_CMD：HTML の場合のアクションであり、google-chrome を使って開く
-+ FISHINGZ_DB_REBUILD_THLD：DB の構築までの fishingz 使用上限数を定義する
-+ FISHINGZ_HISTSIZE：C-u C-u 実施時に表示する MRU の個数
-+ FISHINGZ_TOGGLE_USE_SUDO： ReadOnly ファイルの場合に、sudo を使うように定義する
-+ FISHINGZ_TOGGLE_EXEC_MODE： 実行ファイルの場合に、実行するかどうかを定義する
-+ FISHINGZ_NPROC_ON_REBUILD：DB 再構築時に使用する CPU の個数
-+ FISHINGZ_FZF_COLOR：DB 選択画面の
+
+|変数|用途|
+|---|:--|
+|FISHINGZ_F_CMD|ファイルの場合のアクションであり、下記の場合は nvim を登録している。|
+|FISHINGZ_F_HTML_CMD|HTML の場合のアクションであり、google-chrome を使って開く|
+|FISHINGZ_DB_REBUILD_THLD|DB の構築までの fishingz 使用上限数を定義する|
+|FISHINGZ_HISTSIZE|C-u C-u 実施時に表示する MRU の個数|
+|FISHINGZ_TOGGLE_USE_SUDO|ReadOnly ファイルの場合に、sudo を使うように定義する|
+|FISHINGZ_TOGGLE_EXEC_MODE|実行ファイルの場合に、実行するかどうかを定義する|
+|FISHINGZ_NPROC_ON_REBUILD|DB 再構築時に使用する CPU の個数|
+|FISHINGZ_FZF_COLOR|DB 選択画面の色設定|
 ```
 # Command to execute in case of [f]
 set -g FISHINGZ_F_CMD             "nvim"
