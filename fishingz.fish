@@ -99,7 +99,7 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.5.0
+      set -g    FISHINGZ_DB_VERSION        1.5.1
       set -g    FISHINGZ_LOCKFILE          _____updating_____.lock
   
     end   # End of 'fishingz::DB::load_settings'
@@ -713,7 +713,7 @@ function fishingz
   --description "fishscript can duplicate the function of the location by 'functions'. "
 
     test ! -d $FISHINGZ_WORKDIR ;and mkdir -p $FISHINGZ_WORKDIR
-    set    FISHINGZ_AVATAR   ( mktemp -p $FISHINGZ_WORKDIR )
+    set    FISHINGZ_AVATAR   ( mktemp -p $FISHINGZ_WORKDIR 2>/dev/null )
     functions fishingz      >> $FISHINGZ_AVATAR
     sed -i '1s/^/set   -g  FISHINGZ_ECHO_OFF 1\n/'        $FISHINGZ_AVATAR
     sed -i '1s/^/set   -g  FISHINGZ_AVATAR   (mktemp)\n/' $FISHINGZ_AVATAR
