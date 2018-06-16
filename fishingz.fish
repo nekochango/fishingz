@@ -12,9 +12,11 @@ function fishingz
   --description "The command written here is called in 'fn_opr_f'."
 
     # command to call in the case of file
-    test -z "$FISHINGZ_F_CMD"             ;and set -g FISHINGZ_F_CMD   "nano"
+    test -z "$FISHINGZ_F_CMD"             ;and set -g FISHINGZ_F_CMD      "nano"
+    # command to call in the case of HTML file
+    test -z "$FISHINGZ_F_HTML_CMD"        ;and set -g FISHINGZ_F_HTML_CMD "firefox"
     # command to call in the case of directory
-    test -z "$FISHINGZ_D_CMD"             ;and set -g FISHINGZ_D_CMD   "cd"
+    test -z "$FISHINGZ_D_CMD"             ;and set -g FISHINGZ_D_CMD      "cd"
     # command to use in the background to call in the case of directory
 #   test -z "$FISHINGZ_JORKER"            ;and set -g FISHINGZ_JORKER "xdg-open"
     # use sudo, when you can not writ file (1:use sudo, 0: not use)
@@ -23,7 +25,8 @@ function fishingz
     test -z "$FISHINGZ_TOGGLE_EXEC_MODE"  ;and set -g FISHINGZ_TOGGLE_EXEC_MODE  0
 
     set -g    FISHINGZ_UUID                 (uuidgen)
-    set -g    FISHINGZ_WORKDIR              /tmp/$USER.fishingz/$FISHINGZ_UUID # Don't REMOVE
+    set -g    FISHINGZ_USER_AREA            /tmp/$USER.fishingz
+    set -g    FISHINGZ_WORKDIR              $FISHINGZ_USER_AREA/$FISHINGZ_UUID # Don't REMOVE
     set -g    FISHINGZ_AVATAR                                                  # Don't REMOVE
 
   end   # End of 'fishingz::load_settings'
@@ -95,7 +98,8 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.1.0
+      set -g    FISHINGZ_DB_VERSION        1.4.0
+      set -g    FISHINGZ_LOCKFILE          _____updating_____.lock
   
     end   # End of 'fishingz::DB::load_settings'
   
@@ -189,7 +193,8 @@ function fishingz
           set database  $FISHINGZ_DB_PATH
           set M ( egrep -n "\[d\]	$index\[0m" $database | cut -f1 -d':' )
           if test ! -z $FISHINGZ_HISTSIZE
-            tail -n $FISHINGZ_HISTSIZE $FISHINGZ_DB_MRU_PATH | tac
+            tail -n $FISHINGZ_HISTSIZE $FISHINGZ_DB_MRU_PATH | tac | \
+              sed  "s:\(.*\):[1;$FISHINGZ_COLOR_H\[H]	&[0m:g" 
           end
 
           if test -z "$M"
@@ -206,7 +211,7 @@ function fishingz
             sed -n "1,$B"p   $database | tac
           end
 
-        else
+        else  # test "$filter"
           # Individually display
           if test $filter = "--find-dir"
             set database  $FISHINGZ_DB_DIR_PATH
@@ -222,9 +227,13 @@ function fishingz
             set M ( grep -n -w "$index" $database | head -n1 | cut -f1 -d':' )
           else if test $filter = "--find-mru"
             set database  $FISHINGZ_DB_MRU_PATH
+            test $argv[4] = "--ansi" ;and set color  $FISHINGZ_COLOR_H
           end
 
-          if test -z "$M"
+          if test -z "$M" ;and test $filter = "--find-mru"
+            test ! -z "$color" ;and sed "s/.*/[1;$color&[0m/g" $database | tac
+                               ;or  tac $database 
+          else if test -z "$M"
             # I am in a location that is not registered in the DB
             test ! -z "$color" ;and sed "s/.*/[1;$color&[0m/g" $database 
                                ;or  cat $database
@@ -289,7 +298,7 @@ function fishingz
     function fishingz::DB::auto_rebuild \
     --description "When the threshold is exceeded, the database is updated." \
     --description "This threshold is held in $FISHINGZ_DB_REBUILD_THLD."
-  
+
       # If there is no threshold or 0.
       if test -z "$FISHINGZ_DB_REBUILD_THLD" ;or test "$FISHINGZ_DB_REBUILD_THLD" = 0
         rm -f $FISHINGZ_AVATAR
@@ -302,6 +311,7 @@ function fishingz
   
       if test $mod -eq 0
         rm -f $FISHINGZ_DB_CALLS
+        # Create a lock file so that it will not be executed multiple times
         setsid nice -n 20 fish $FISHINGZ_AVATAR -i &
       else
         rm -f $FISHINGZ_AVATAR
@@ -320,13 +330,13 @@ function fishingz
       if test ! -z "$argv" 
         test ! -f $FISHINGZ_DB_MRU_PATH ;and touch $FISHINGZ_DB_MRU_PATH 
   
-        set -l ret ( grep "	$argv" $FISHINGZ_DB_MRU_PATH )
+        set -l ret ( sed -n "\:^$argv\$:p" $FISHINGZ_DB_MRU_PATH )
         if test ! -z "$ret"
-          sed -i "\:	$argv:d"  $FISHINGZ_DB_MRU_PATH
+          sed -i "\:^$argv:d"  $FISHINGZ_DB_MRU_PATH
         end
       end
   
-      echo "[1;$FISHINGZ_COLOR_H""[H]	$argv[0m" >> $FISHINGZ_DB_MRU_PATH
+      echo "$argv" >> $FISHINGZ_DB_MRU_PATH
       return 0
     end
   
@@ -396,8 +406,19 @@ function fishingz
       set -l input        $argv[2]
       set -l output       $argv[3]
       set -l sum          ( egrep -c "*" $input )   # num of directories 
-      set    cores        ( nproc )
-      set    thread       ( echo "$cores"' * 5' | bc )
+      if test ! -z "$FISHINGZ_NPROC_ON_REBUILD"
+        if test "$FISHINGZ_NPROC_ON_REBUILD" = "0"
+          set  cores        1
+          set  thread       1
+        else
+          set  cores        ( expr $FISHINGZ_NPROC_ON_REBUILD )
+          set  thread       $cores
+        end
+      else
+        set    cores        ( nproc )
+        set    thread       ( echo "$cores"' * 5' | bc )
+return 0
+      end
       set -l sep          ( expr $sum /  $thread )  # one thread has lines
       set -l mod          ( expr $sum \% $thread )
       set -l b            1                         # Begin (counter)
@@ -511,8 +532,13 @@ function fishingz
           set -l  found_path  ( find / -maxdepth 1 -mindepth 1 -type d 2>/dev/null )
           set     target      $found_path # copy for debug 
           test -z "$target" ;and echo "$mesg was out of creating"  >&2
-          fishingz::DB::build $target
-  
+          if test -f "$FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE"
+            return 1  # don't remove $FISHINGZ_WORKDIR
+          else
+            touch $FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE  # Lock to prevent multiple execution
+            fishingz::DB::build $target
+            rm -f $FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE  # Unlock
+          end
         else if test "$FISHINGZ_DB_MODE" = "G"
           fishingz::DB::get_path $argv
   
@@ -520,7 +546,11 @@ function fishingz
           fishingz::DB::add_mru  $argv[3..-1] 
           set retval $status
           if test $retval -eq 0
-            fishingz::DB::auto_rebuild
+            if test -f "$FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE"
+              return 1  # don't remove $FISHINGZ_WORKDIR
+            else
+              fishingz::DB::auto_rebuild
+            end
           end
         end
       end   # End of fn_db_start
@@ -593,12 +623,9 @@ function fishingz
       switch $ftype
 
         case "text/html*"
-          if test ( which google-chrome )
-            setsid google-chrome $path &
-            set ptr_EXECLINE "google-chrome $path"
-          else if test ( which firefox )
-            setsid firefox $path &
-            set ptr_EXECLINE "firefox $path"
+          if test ! -z "$FISHINGZ_F_HTML_CMD"
+            setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &
+            set ptr_EXECLINE "setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &"
           else
             eval $FISHINGZ_F_CMD $path ;
             set ptr_EXECLINE "$FISHINGZ_F_CMD $path"
@@ -686,9 +713,7 @@ function fishingz
   --description "Because I do not know the location of the executable file (fishingz.fish)." \
   --description "fishscript can duplicate the function of the location by 'functions'. "
 
-    test ! -d $FISHINGZ_WORKDIR/.avatar ;
-      and mkdir -p $FISHINGZ_WORKDIR/.avatar
-
+    test ! -d $FISHINGZ_WORKDIR ;and mkdir -p $FISHINGZ_WORKDIR
     set    FISHINGZ_AVATAR   ( mktemp -p $FISHINGZ_WORKDIR )
     functions fishingz      >> $FISHINGZ_AVATAR
     sed -i '1s/^/set   -g  FISHINGZ_ECHO_OFF 1\n/'        $FISHINGZ_AVATAR
@@ -710,6 +735,9 @@ function fishingz
 
     test -z "$FISHINGZ_WORKDIR" ;
       and echo 'Error: $FISHINGZ_WORKDIR is empty' >&2 ;and exit 2
+
+    test ! -d "$FISHINGZ_WORKDIR" ;
+      and mkdir -p $FISHINGZ_WORKDIR
   end
 
 
@@ -734,13 +762,14 @@ function fishingz
       fishingz::DB -g $argv
 
       if test ! -z "$ptr_RETURNED_PATH"
-        if test -z "$argv[1]" ;or test "$argv[1]" = "--find-mru"  
+        if test -z "$argv[1]"
           set type   ( echo $ptr_RETURNED_PATH | cut -f1  -d'	')
           set path   ( echo $ptr_RETURNED_PATH | cut -f2- -d'	')
         else
           test "$argv[1]" = "--find-dir"  ;and set type "[d]"
           test "$argv[1]" = "--find-file" ;and set type "[f]"
           test "$argv[1]" = "--find-link" ;and set type "[l]"
+          test "$argv[1]" = "--find-mru"  ;and set type "[H]"
           set path   ( echo $ptr_RETURNED_PATH )
         end
         fishingz::command $type $path
@@ -749,7 +778,8 @@ function fishingz
     
     function fn_stop
       test ! -z "$argv" ;and fishingz::DB -m "$argv"
-      rm -rf $FISHINGZ_WORKDIR
+      test   -z "$FISHINGZ_USER_AREA" ;and echo 'Error: $FISHINGZ_USER_AREA is empty' ;and return 255
+      test ! -f $FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE ;and rm -rf $FISHINGZ_USER_AREA/*
       echo -en "\r"
       fish_prompt
       echo -n  ' '
