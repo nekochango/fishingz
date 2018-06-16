@@ -5,9 +5,12 @@ fishingz は root権限を使わないことを想定しています。
 　
 　
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ">
-### :fish: 1　パス情報ファイルを開く
+### $HOME/Videos から /etc/apache2/sites-enabled に移動する
+#### :fish: 1　パス情報ファイル(locate.db)を開く
 ![open_a_locatedb](https://user-images.githubusercontent.com/39640214/41501398-9ff0be4e-71de-11e8-8720-41733d6c0f7e.gif)
 
+#### :fish: 2　/etc/apache2/sites-enabled を選択する
+![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
 　
  
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=できること">
