@@ -3,7 +3,7 @@ set -g FISHINGZ_F_CMD             "nvim"
 set -g FISHINGZ_F_HTML_CMD        "google-chrome"
 
 # It represents how many times fishingz is updated when it is updated
-set -g  FISHINGZ_DB_REBUILD_THLD  5       # 50 <default>
+set -g  FISHINGZ_DB_REBUILD_THLD  50      # 50 <default>
 set -g  FISHINGZ_HISTSIZE         10      # 10 <default>
 
 # use sudo, when you can not writ file (1:use sudo, 0: not use <default> )

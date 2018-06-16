@@ -1,5 +1,5 @@
 #!/usr/bin/env fish
-
+#
 function fishingz 
 
   function fishingz::load_userfile
@@ -18,7 +18,7 @@ function fishingz
     # command to call in the case of directory
     test -z "$FISHINGZ_D_CMD"             ;and set -g FISHINGZ_D_CMD      "cd"
     # command to use in the background to call in the case of directory
-#   test -z "$FISHINGZ_JORKER"            ;and set -g FISHINGZ_JORKER "xdg-open"
+#   test -z "$FISHINGZ_JORKER"            ;and set -g FISHINGZ_JORKER     "xdg-open"
     # use sudo, when you can not writ file (1:use sudo, 0: not use)
     test -z "$FISHINGZ_TOGGLE_USE_SUDO"   ;and set -g FISHINGZ_TOGGLE_USE_SUDO   0
     # execute it, if it have +x permission (1:execute,  0: not execute)
@@ -26,9 +26,10 @@ function fishingz
 
     set -g    FISHINGZ_UUID                 (uuidgen)
     set -g    FISHINGZ_USER_AREA            /tmp/$USER.fishingz
-    set -g    FISHINGZ_WORKDIR              $FISHINGZ_USER_AREA/$FISHINGZ_UUID # Don't REMOVE
-    set -g    FISHINGZ_AVATAR                                                  # Don't REMOVE
+    set -g    FISHINGZ_WORKDIR              $FISHINGZ_USER_AREA/$FISHINGZ_UUID
+    set -g    FISHINGZ_AVATAR
 
+    tput hpa 0
   end   # End of 'fishingz::load_settings'
 
 
@@ -37,14 +38,14 @@ function fishingz
     function fishingz::DB::load_settings
 
       # It represents how many times fishingz is updated when it is updated
-      test -z "$FISHINGZ_DB_REBUILD_THLD" ;and set -g  FISHINGZ_DB_REBUILD_THLD  50
+      test -z "$FISHINGZ_DB_REBUILD_THLD" ;and set -g  FISHINGZ_DB_REBUILD_THLD  50000
       test -z "$FISHINGZ_HISTSIZE"        ;and set -g  FISHINGZ_HISTSIZE         10
 
       # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
       test -z "$FISHINGZ_COLOR_D"   ;and  set -g  FISHINGZ_COLOR_D  32m       # [d] directory
       test -z "$FISHINGZ_COLOR_F"   ;and  set -g  FISHINGZ_COLOR_F  36m       # [f] file
       test -z "$FISHINGZ_COLOR_L"   ;and  set -g  FISHINGZ_COLOR_L  35m       # [l] symlink
-      test -z "$FISHINGZ_COLOR_H"   ;and  set -g  FISHINGZ_COLOR_H  33m       # [H] MRU
+      test -z "$FISHINGZ_COLOR_M"   ;and  set -g  FISHINGZ_COLOR_M  33m       # [M] MRU
 
       # fzf color option's
       test -z "$FISHINGZ_FZF_COLOR" ;and  set -g  FISHINGZ_FZF_COLOR "--color=hl:#ff00b0,bg+:#666666"
@@ -98,7 +99,7 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.4.0
+      set -g    FISHINGZ_DB_VERSION        1.5.0
       set -g    FISHINGZ_LOCKFILE          _____updating_____.lock
   
     end   # End of 'fishingz::DB::load_settings'
@@ -142,7 +143,12 @@ function fishingz
     
       function fn_db_install
   
-        if test $FISHINGZ_DB_MODE = "I"
+        if test $FISHINGZ_DB_MODE = "I" ;or test $FISHINGZ_DB_MODE = "R"
+
+          rm -f $FISHINGZ_DB_DIR_PATH
+          rm -f $FISHINGZ_DB_FILE_PATH
+          rm -f $FISHINGZ_DB_LINK_PATH
+
           test -f $WALKED_DIRLIST  ;and cp -fp $WALKED_DIRLIST  $FISHINGZ_DB_DIR_PATH
           test -f $WALKED_FILELIST ;and cp -fp $WALKED_FILELIST $FISHINGZ_DB_FILE_PATH
           test -f $WALKED_LINKLIST ;and cp -fp $WALKED_LINKLIST $FISHINGZ_DB_LINK_PATH
@@ -194,7 +200,7 @@ function fishingz
           set M ( egrep -n "\[d\]	$index\[0m" $database | cut -f1 -d':' )
           if test ! -z $FISHINGZ_HISTSIZE
             tail -n $FISHINGZ_HISTSIZE $FISHINGZ_DB_MRU_PATH | tac | \
-              sed  "s:\(.*\):[1;$FISHINGZ_COLOR_H\[H]	&[0m:g" 
+              sed  "s:\(.*\):[1;$FISHINGZ_COLOR_M\[M]	&[0m:g" 
           end
 
           if test -z "$M"
@@ -227,7 +233,7 @@ function fishingz
             set M ( grep -n -w "$index" $database | head -n1 | cut -f1 -d':' )
           else if test $filter = "--find-mru"
             set database  $FISHINGZ_DB_MRU_PATH
-            test $argv[4] = "--ansi" ;and set color  $FISHINGZ_COLOR_H
+            test $argv[4] = "--ansi" ;and set color  $FISHINGZ_COLOR_M
           end
 
           if test -z "$M" ;and test $filter = "--find-mru"
@@ -312,7 +318,8 @@ function fishingz
       if test $mod -eq 0
         rm -f $FISHINGZ_DB_CALLS
         # Create a lock file so that it will not be executed multiple times
-        setsid nice -n 20 fish $FISHINGZ_AVATAR -i &
+        set -g FISHINGZ_AVATAR_MODE "ON"
+        setsid nice -n 20 fish $FISHINGZ_AVATAR -R &
       else
         rm -f $FISHINGZ_AVATAR
       end
@@ -406,7 +413,7 @@ function fishingz
       set -l input        $argv[2]
       set -l output       $argv[3]
       set -l sum          ( egrep -c "*" $input )   # num of directories 
-      if test ! -z "$FISHINGZ_NPROC_ON_REBUILD"
+      if test ! -z "$FISHINGZ_NPROC_ON_REBUILD" ;and test "$FISHINGZ_DB_MODE" = "R"
         if test "$FISHINGZ_NPROC_ON_REBUILD" = "0"
           set  cores        1
           set  thread       1
@@ -417,7 +424,6 @@ function fishingz
       else
         set    cores        ( nproc )
         set    thread       ( echo "$cores"' * 5' | bc )
-return 0
       end
       set -l sep          ( expr $sum /  $thread )  # one thread has lines
       set -l mod          ( expr $sum \% $thread )
@@ -507,12 +513,13 @@ return 0
   
         if test -z "$argv[1]" 
           echo "option is nothing.." >&2
-        else if test $argv[1] = "-i"
-          rm -f $FISHINGZ_DB_DIR_PATH
-          rm -f $FISHINGZ_DB_FILE_PATH
-          rm -f $FISHINGZ_DB_LINK_PATH
-          #rm -f $FISHINGZ_DB_MRU_PATH
-          set FISHINGZ_DB_MODE "I"
+        else if test $argv[1] = "-i"  ;or test $argv[1] = "-R"
+#         rm -f $FISHINGZ_DB_DIR_PATH
+#         rm -f $FISHINGZ_DB_FILE_PATH
+#         rm -f $FISHINGZ_DB_LINK_PATH
+#         #rm -f $FISHINGZ_DB_MRU_PATH
+          test $argv[1] = "-i" ;and set FISHINGZ_DB_MODE "I"
+                               ;or  set FISHINGZ_DB_MODE "R"
         else if test $argv[1] = "--get-path"
           set FISHINGZ_DB_MODE "G"
         else if test $argv[1] = "--save-mru"
@@ -528,11 +535,11 @@ return 0
         set -l target 
         set -l mesg $argv[2..-1]
   
-        if test "$FISHINGZ_DB_MODE" = "I"
+        if test "$FISHINGZ_DB_MODE" = "I" ;or test "$FISHINGZ_DB_MODE" = "R" 
           set -l  found_path  ( find / -maxdepth 1 -mindepth 1 -type d 2>/dev/null )
           set     target      $found_path # copy for debug 
           test -z "$target" ;and echo "$mesg was out of creating"  >&2
-          if test -f "$FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE"
+          if test -f "$FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE" ;and test "$FISHINGZ_DB_MODE" = "R" 
             return 1  # don't remove $FISHINGZ_WORKDIR
           else
             touch $FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE  # Lock to prevent multiple execution
@@ -569,13 +576,15 @@ return 0
     switch $argv[1]
       case  "-i"    # accessed accessed by 'fishingz_update'
        fishingz::DB::do_pipeline $argv
+      case  "-R"    # accessed accessed by 'fishingz_update'
+       fishingz::DB::do_pipeline $argv
       case  "-m"    # Update mru data
         fishingz::DB::do_pipeline --save-mru $argv
       case  "-g"    # Get path accessed by 'fishingz'
         fishingz::DB::do_pipeline --get-path $argv[2..-1]
     end
   
-  end   # End of 'fishingz::db '
+  end   # End of 'fishingz::DB '
 
 
   function fishingz::command --no-scope-shadowing
@@ -597,16 +606,6 @@ return 0
         ls -ld $path
         return 0
       else
-        set -l oldlen ( string length $PWD  )
-        set -l newlen ( string length $path )
-        if test $oldlen -lt $newlen              # (pwd) < $path
-          echo -en "\r"
-          stty sane
-          echo >&2
-        else 
-          echo >&2
-          echo -en "\r"
-        end
         eval $FISHINGZ_D_CMD $path
         set ptr_EXECLINE "$FISHINGZ_D_CMD $path"
       end
@@ -680,8 +679,8 @@ return 0
     end  # End of 'fn_opr_l'
   
 
-    function fn_opr_h --no-scope-shadowing\
-    --description "When [H] is selected on the list" \
+    function fn_opr_m --no-scope-shadowing\
+    --description "When [M] is selected on the list" \
     --description "In the case of a symbolic link, judge the file type and open it"
       eval $argv
       set ptr_EXECLINE "$argv"
@@ -698,8 +697,8 @@ return 0
         fn_opr_f  $path
       case "[l]"
         fn_opr_l  $path
-      case "[H]"
-        fn_opr_h  $path
+      case "[M]"
+        fn_opr_m  $path
       case ""
         #echo '$type was empty...' >&2
       case "*"
@@ -728,16 +727,17 @@ return 0
       and set FISHINGZ_TOGGLE_USE_SUDO 0
 
     test -z "$FISHINGZ_F_CMD" ;
-      and echo 'Error: $FISHINGZ_F_CMD is empty'   >&2 ;and exit 2
+      and echo 'Error: $FISHINGZ_F_CMD is empty'    >&2 ;and exit 2
 
     test -z "$FISHINGZ_D_CMD" ;
-      and echo 'Error: $FISHINGZ_D_CMD is empty'   >&2 ;and exit 2
+      and echo 'Error: $FISHINGZ_D_CMD is empty'    >&2 ;and exit 2
 
     test -z "$FISHINGZ_WORKDIR" ;
-      and echo 'Error: $FISHINGZ_WORKDIR is empty' >&2 ;and exit 2
+      and echo 'Error: $FISHINGZ_WORKDIR is empty'  >&2 ;and exit 2
 
-    test ! -d "$FISHINGZ_WORKDIR" ;
-      and mkdir -p $FISHINGZ_WORKDIR
+    test -z "$FISHINGZ_USER_AREA" ;
+      and echo 'Error: $FISHINGZ_USER_AREA is empty'>&2 ;and exit 2
+
   end
 
 
@@ -769,7 +769,7 @@ return 0
           test "$argv[1]" = "--find-dir"  ;and set type "[d]"
           test "$argv[1]" = "--find-file" ;and set type "[f]"
           test "$argv[1]" = "--find-link" ;and set type "[l]"
-          test "$argv[1]" = "--find-mru"  ;and set type "[H]"
+          test "$argv[1]" = "--find-mru"  ;and set type "[M]"
           set path   ( echo $ptr_RETURNED_PATH )
         end
         fishingz::command $type $path
@@ -777,13 +777,12 @@ return 0
     end
     
     function fn_stop
+
       test ! -z "$argv" ;and fishingz::DB -m "$argv"
       test   -z "$FISHINGZ_USER_AREA" ;and echo 'Error: $FISHINGZ_USER_AREA is empty' ;and return 255
-      test ! -f $FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE ;and rm -rf $FISHINGZ_USER_AREA/*
-      echo -en "\r"
-      fish_prompt
-      echo -n  ' '
-      echo -en '\b'
+      if test ! -f $FISHINGZ_USER_AREA/$FISHINGZ_LOCKFILE ;and test -z "$FISHINGZ_AVATAR_MODE"
+        rm -rf $FISHINGZ_USER_AREA/*
+      end
     end
   
     if test "$argv" = '--init-only'
@@ -807,7 +806,7 @@ return 0
          or test "$argv[1]" = "--find-link" ;
          or test "$argv[1]" = "--find-mru"
     fishingz::do_pipeline $argv[1] --ansi
-  else if test $argv[1] = "-i" ;or test $argv[1] = "--init"
+  else if test $argv[1] = "-i" ;or test $argv[1] = "-R"
     fishingz::do_pipeline --init-only
     fishingz::DB $argv
     fishingz::do_pipeline --stop-only
