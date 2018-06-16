@@ -1,15 +1,44 @@
 ## <img src="http://placehold.jp/28/39aaff/ffffff/180x40.png?text=fishingz">
-fishingz は fzf と fish shell を使った、fish 専用のプラグインです。  
-Vim の Unite, Emacs の Anything のようなイメージで、ファイルシステム全体にアクセスすることが可能です。  
-fishingz は root権限を使わないことを想定しています。  
-　
-　
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ">
-### $HOME/Videos から /etc/apache2/sites-enabled に移動する
-#### :fish: 1　パス情報ファイル(locate.db)を開く
-![open_a_locatedb](https://user-images.githubusercontent.com/39640214/41501398-9ff0be4e-71de-11e8-8720-41733d6c0f7e.gif)
+fishingz はファイルシステム全てに高速アクセスするための fish shell 専用のプラグインです。  
+次の特徴を持ちます。
 
++ パス情報(以降、DB とする)を使って高速に全ファイルシステムにアクセスする  
+```
+「ディレクトリ」であれば、cd を実行する
+「ファイル」であれば、ファイル種別に応じてお気に入りのエディタやブラウザで開く
+```
++ DB からファイルパスのみのコピー&ペーストも可能(X Windows が必要)
+```
+grep や cp, mv などでパスが必要となる場合の支援をする。
+```
++ DB は cron, at 等のスケジューラ無しで自動更新する
+```
+初回のみ、ユーザによる手動による DB 構築が必要だが、最大限の並列探索により時間の短縮化をしている。
+2回目以降(自動更新時)は、マシン負荷を減して DB を再構築する。(マシン負荷調整は可能である)
+```
++ fishingz は root権限を使わないで実現しているので、所有 PC 以外でも使用可能   
+```
+必須ソフトは fzf であり、fzf は非管理者であってもローカル上に導入できる。  
+推奨ソフトである xclip, xsel についてもローカル上に導入できる(はず)
+```
++ Vim の Unite, Emacs の Anything のような操作性を持つ。 
+++ 以下のように Unite に似た操作性となってい
+```
+C-u C-u ：「ディレクトリ」「ファイル」「シンボリックリンク」「履歴」全てを含む DB を使用する
+C-u C-i ：「ディレクトリ」のみを含む DB を使用する。
+C-u C-f ：「ファイル」のみを含む DB を使用する。
+C-u C-l ：「シンボリックリンクファイル」のみを含む DB を使用する。
+C-u C-m ：「履歴」のみを含む DB を使用する。
+```
+　
+ 
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ">
+### $HOME/Videos から /etc/apache2/sites-enabled ディレクトリに移動する
+#### :fish: 1　DB を開く
+![open_a_locatedb](https://user-images.githubusercontent.com/39640214/41501398-9ff0be4e-71de-11e8-8720-41733d6c0f7e.gif)
+　
 #### :fish: 2　/etc/apache2/sites-enabled を選択する
+fzf により絞り込みを行います。
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
 　
  
@@ -22,8 +51,12 @@ Unite (Vim) の Action に該当する部分です。
 ```diff
 + ディレクトリであれば cd を実行して移動する  
 + ファイルであれば 関連付けたエディタで開く  
++   - file -b -i の結果により関連付けが可能である   
+-     (が、現状はコードに直書きする必要がある)
 + シンボリックリンクであれば、ディレクトリかファイルかを判別して上記いずれかの処理を行う  
-+ パスをクリップボードにコピーする    
++ パスをクリップボードにコピーする (X Windows ありの場合のみ)    
++   - Ctrl-e によるクリップボードへのコピーが可能である
+-     (クリップボードへのコピー実施後のカーソル位置の(表示上の)復旧が未対応である)
 ```
 　
 ### :fish: 2　パス収集を自動で行う    
