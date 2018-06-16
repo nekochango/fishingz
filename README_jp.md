@@ -1,6 +1,6 @@
 ## <img src="http://placehold.jp/28/39aaff/ffffff/180x40.png?text=fishingz">
-fishingz はファイルシステム全てに高速アクセスするための fish shell 専用のプラグインです。  
-次の特徴を持ちます。
+fishingz = ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。  
+次の特徴を持つ。 
 
 ### :whale: パス情報(以降、DB とする)を使って高速に全ファイルシステムにアクセスする  
 ```diff
@@ -42,7 +42,7 @@ C-u C-m ：「履歴」のみを含む DB を使用する。
 　
 #### :fish: 2　/etc/apache2/sites-enabled を選択する
 + fzf により絞り込み、所望のディレクトリパスを選択することで cd 実行が可能である
-+ 下図では /etcapac2site としてディレクトリを絞り込
++ 下図では /etcapac2site としてディレクトリを絞り込み、[d]  /etc/apache2/sites-enabled を選択して、cd 
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
 　
  
@@ -63,19 +63,20 @@ Unite (Vim) の Action に該当する部分です。
 -     (クリップボードへのコピー実施後のカーソル位置の(表示上の)復旧が未対応である)
 ```
 　
-### :fish: 2　パス収集を自動で行う    
+### :fish: 2　DB 構築を行う    
 ファイルシステム全体に対してパスの収集を行い DB を作成する。  
-パス収集については以下の留意点があります。
+パス収集については以下の留意点がある。
 ```diff
 - 収集可能なパスはユーザがアクセス可能なパスに限定される  
 - 初期設定では /home と /etc 以外 (/proc, /tmp, /sys, /lib,... など) パス収集の対象外としている  
-- 初回の DB 構築時は速度を優先してマシンスペックを最大限使う
-- 初回のパス情報収集は手動で行う   
-+ 2回目以降の DB 構築は低負荷モードで自動的に実施される
+- 初回の DB 構築 (パス情報収集) は手動で行う   
++   - 構築速度を優先してマシンスペックを最大限使って実施する  
++ 2回目以降の DB 構築は低負荷モードで自動的に実施させる
++   - 負荷の調整は可能である
 + 自動更新のために cron, at などのタスクスケジューラを稼動させる必要はない
-+   - 所定の回数だけ fishingz を使えば、DB の再構築をするようにしている
++   - 所定の回数だけ fishingz を使えば、DB の再構築をさせることも可能
 ```
-　
+
 　
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install">
 
@@ -85,12 +86,11 @@ git clone https://nekochango@github.com/nekochango/fishingz
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
 ```  
 　
-fishingz を使うためには以下のソフトが必要です。  
 **必要なソフトウェア**
 ```diff
-+ 　　　fish (2.7 以上を推奨する)
++ 　　　fish (2.7 以上を推奨する. 2.3.0 )
 + 　　　fzf  
-+ 　　　tac
++ 　　　tac (万一なければ)
 + 　　　xclip もしくは xsel (必須ではないが、無ければ使用できない機能がある)
 ```  
 　
@@ -131,7 +131,7 @@ C-u C-m ：「履歴」のみを含む DB を使用する。
 ```
 　
 　
-### :tropical_fish:　2. パス情報ファイルを作成する
+### :tropical_fish:　2. DB を作成する
 次にファイルシステム全体のパスを収集しファイルに保存します。  
 デフォルトの保存先は $HOME/.fishingz/ 以下です。  
 ```console  
@@ -144,10 +144,50 @@ Searching files ....  [235502]
 Searching symbolic links ....  [58027]
 ```
 
+### ：tropical_fish:　3. ユーザ設定をする
+ユーザによって異なる設定を行う。設定ファイルは以下である。
+
+***$HOME/.fishingz/init.fish***
++ FISHINGZ_F_CMD がファイルの場合のアクションであり、下記の場合は nvim を登録している。
++ FISHINGZ_F_HTML_CMD：HTML の場合のアクションであり、google-chrome を使って開く
++ FISHINGZ_DB_REBUILD_THLD：DB の構築までの fishingz 使用上限数を定義する
++ FISHINGZ_HISTSIZE：C-u C-u 実施時に表示する MRU の個数
++ FISHINGZ_TOGGLE_USE_SUDO： ReadOnly ファイルの場合に、sudo を使うように定義する
++ FISHINGZ_TOGGLE_EXEC_MODE： 実行ファイルの場合に、実行するかどうかを定義する
++ FISHINGZ_NPROC_ON_REBUILD：DB 再構築時に使用する CPU の個数
++ FISHINGZ_FZF_COLOR：DB 選択画面の
+```
+# Command to execute in case of [f]
+set -g FISHINGZ_F_CMD             "nvim"
+set -g FISHINGZ_F_HTML_CMD        "google-chrome"
+
+# It represents how many times fishingz is updated when it is updated
+set -g  FISHINGZ_DB_REBUILD_THLD  50      # 50 <default>
+set -g  FISHINGZ_HISTSIZE         10      # 10 <default>
+
+# use sudo, when you can not writ file (1:use sudo, 0: not use <default> )
+set -g FISHINGZ_TOGGLE_USE_SUDO   1
+
+# execute it, if it have +x permission (1:execute,  0: not execute <default> )
+set -g FISHINGZ_TOGGLE_EXEC_MODE  0
+
+# Number of Core to use when rebuilding DB
+set -g FISHINGZ_NPROC_ON_REBUILD  1
+
+# fzf color settings.
+# 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
+set -g  FISHINGZ_COLOR_D  32m       # [d] directory
+set -g  FISHINGZ_COLOR_F  36m       # [f] file
+set -g  FISHINGZ_COLOR_L  35m       # [l] symlink
+set -g  FISHINGZ_COLOR_H  33m       # [H] MRU
+set -g  FISHINGZ_FZF_COLOR "--color=hl:#ff00b0,bg+:#666666"
+```
+
+
 
 |表示|C-u C-u を実行する<br>行頭[d]がディレクトリである。<br>行頭[H]がfishingzで直近実行したコマンドである。<br>色設定は fishingz.fish で定義しているので必要に応じて変える。|
 |---|:--|
-|　　|![fishingz_1](https://user-images.githubusercontent.com/39640214/41203061-26f782b4-6d0d-11e8-8db7-11613306e2bb.jpg)|
+|![fishingz_1](https://user-images.githubusercontent.com/39640214/41203061-26f782b4-6d0d-11e8-8db7-11613306e2bb.jpg)|
 
 |抽出|fzf により絞り込みを行う<br>行頭[f]がファイルである。<br>行頭[l]がシンボリックリンクである。|
 |---|:--|
