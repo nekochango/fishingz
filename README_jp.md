@@ -144,11 +144,12 @@ Searching files ....  [235502]
 Searching symbolic links ....  [58027]
 ```
 
-### ：tropical_fish:　3. ユーザ設定をする
-ユーザによって異なる設定を行う。設定ファイルは以下である。
+
+### :tropical_fish:　3. ユーザ設定をする
+ユーザによって異なる設定を行う。設定ファイルは HOME/.fishingz/init.fish である。
 
 ***$HOME/.fishingz/init.fish***
-+ FISHINGZ_F_CMD がファイルの場合のアクションであり、下記の場合は nvim を登録している。
++ FISHINGZ_F_CMD：ファイルの場合のアクションであり、下記の場合は nvim を登録している。
 + FISHINGZ_F_HTML_CMD：HTML の場合のアクションであり、google-chrome を使って開く
 + FISHINGZ_DB_REBUILD_THLD：DB の構築までの fishingz 使用上限数を定義する
 + FISHINGZ_HISTSIZE：C-u C-u 実施時に表示する MRU の個数
