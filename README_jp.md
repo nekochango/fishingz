@@ -47,5 +47,46 @@
 + 目標の <b>[d]  /etc/apache2/sites-enabled </b>を選択する。  
 + 以上の操作で<b> cd /etc/apache2/sites-enabled </b>が実行された。
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
-　
- 
+
+
+
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install">
+
+### :tropical_fish:　　必要なソフトウェア
+```diff
++ 　　　fish (推奨 2.7 以上。 2.2 は不可)
++ 　　　fzf  
++ 　　　xclip もしくは xsel
+```  
+
+### :tropical_fish:　　fishingz のインストールをする
+```console  
+git clone https://nekochango@github.com/nekochango/fishingz  
+cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
+```  
+
+### :tropical_fish:　　fzf のインストールをする
+https://github.com/junegunn/fzf#installation　
+- **fzf** [:mag: install by git](https://github.com/junegunn/fzf#using-git)
+```console
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+```
+ 　
+### :tropical_fish:　　xclip のインストールをする
+- xclip [:mag: install by git](https://github.com/astrand/xclip)  
+<b>管理者権限が無い場合</b>  
++ コンパイルをして xclip を作成する。  
+```console
+git clone https://github.com/astrand/xclip
+autoreconf		# create configuration files
+./configure		# create the Makefile
+make			# build the binary
+```
+
+<b>管理者権限がある場合</b>  
++apt-get install でインストールする。  
+```console
+apt-get install -y xclip
+```
+
