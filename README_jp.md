@@ -2,6 +2,7 @@
 ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。
 事前に収集したパス情報(以降、DB とする)を基にしてアクセスをする。
 　
+　
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=特徴">
 ### :whale: DB を使った高速アクセス
@@ -48,7 +49,7 @@
 + 以上の操作で<b> cd /etc/apache2/sites-enabled </b>が実行された。
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
 
-
+　
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install">
 
@@ -91,6 +92,7 @@ make			# build the binary
 apt-get install -y xclip
 ```
 
+　
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Setup">
 
