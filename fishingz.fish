@@ -9,7 +9,7 @@ function fishingz
   end
 
   function fishingz::load_settings \
-  --description "The command written here is called in 'fn_opr_f'."
+  --description "The command written here is called in 'fishingz::stream::opr_f'."
 
     # command to call in the case of file
     test -z "$FISHINGZ_F_CMD"             ;and set -g FISHINGZ_F_CMD      "nano"
@@ -29,7 +29,6 @@ function fishingz
     set -g    FISHINGZ_WORKDIR              $FISHINGZ_USER_AREA/$FISHINGZ_UUID
     set -g    FISHINGZ_AVATAR
 
-    tput hpa 0
   end   # End of 'fishingz::load_settings'
 
 
@@ -38,7 +37,7 @@ function fishingz
     function fishingz::DB::load_settings
 
       # It represents how many times fishingz is updated when it is updated
-      test -z "$FISHINGZ_DB_REBUILD_THLD" ;and set -g  FISHINGZ_DB_REBUILD_THLD  50000
+      test -z "$FISHINGZ_DB_REBUILD_THLD" ;and set -g  FISHINGZ_DB_REBUILD_THLD  50
       test -z "$FISHINGZ_HISTSIZE"        ;and set -g  FISHINGZ_HISTSIZE         10
 
       # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
@@ -99,7 +98,7 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.5.1
+      set -g    FISHINGZ_DB_VERSION        1.6.0
       set -g    FISHINGZ_LOCKFILE          _____updating_____.lock
   
     end   # End of 'fishingz::DB::load_settings'
@@ -109,7 +108,7 @@ function fishingz
     
       set -g target
     
-      function fn_db_prepare \
+      function fishingz::DB::build::prepare \
       --description ""
         set   target            $argv
         # Delete elements written in $FISHINGZ_EXCLUDE_FS from $found_path
@@ -117,9 +116,9 @@ function fishingz
           set -l omission ( echo $FISHINGZ_EXCLUDE_FS[$i] | sed 's:/$::g' )
           set    target   ( string replace -r "\A$omission\z" '' $target )
         end
-      end   # End of function fn_db_prepare
+      end   # End of function fishingz::DB::build::prepare
     
-      function fn_db_walkdir \
+      function fishingz::DB::build::walkdir \
       --description "execute find on directory, file and symbolic link" 
     
         set -l visit_order       "dir"  "file"  "link"
@@ -139,9 +138,9 @@ function fishingz
           end
     
         end
-      end   # End of fn_db_walkdir
+      end   # End of fishingz::DB::build::walkdir
     
-      function fn_db_install
+      function fishingz::DB::build::install
   
         if test $FISHINGZ_DB_MODE = "I" ;or test $FISHINGZ_DB_MODE = "R"
 
@@ -168,18 +167,18 @@ function fishingz
           # replace database file
           cp -fp $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE $FISHINGZ_DB_DIRNAME/$FISHINGZ_DB_FILE
         end
-      end   # End of fn_db_install
+      end   # End of fishingz::DB::build::install
   
-      fn_db_prepare  $argv
-      fn_db_walkdir
-      fn_db_install
+      fishingz::DB::build::prepare  $argv
+      fishingz::DB::build::walkdir
+      fishingz::DB::build::install
       
     end   # end of function fishingz::DB::build \
 
 
     function fishingz::DB::get_path --no-scope-shadowing
   
-      function fn_db_sort \
+      function fishingz::DB::get_path::sort \
       --description "Rearrange based on character string"
   
         set -l index  $argv[1]
@@ -267,31 +266,32 @@ function fishingz
           end
         end
 
-      end   # End of fn_db_sort
+      end   # End of fishingz::DB::get_path::sort
   
       set -l  basepoint (pwd)
 
       if test -z "$argv[3]"
+        tput sc
         if test ( which xclip )
-          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
                                     --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xclip )+abort' )
+                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xclip   ; tput rc )+abort' )
         else if test ( which xsel )
-          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
                                     --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xsel -i )+abort' )
+                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xsel -i ; tput rc )+abort' )
         else
-          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort --ansi -d'\t' --nth 2 )
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort --ansi -d'\t' --nth 2 )
         end
       else
         if test ( which xclip )
-          set ptr_RETURNED_PATH ( fn_db_sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
                                     --bind 'ctrl-e:execute-silent( echo -n {} | xclip )+abort' )
         else if test ( which xsel )
-          set ptr_RETURNED_PATH ( fn_db_sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
                                     --bind 'ctrl-e:execute-silent( echo -n {} | xsel -i )+abort' )
         else
-          set ptr_RETURNED_PATH ( fn_db_sort $basepoint | fzf --no-sort --ansi )
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort --ansi )
         end
       end
   
@@ -390,7 +390,7 @@ function fishingz
       else
         fish $script 
       end
-    end   # End of 'fn_create_d_list'
+    end   # End of 'fishingz::DB::create_d_list'
     
     function fishingz::DB::create_f_and_l_list \
     --description "execute find file or link on directory"
@@ -483,9 +483,9 @@ function fishingz
       end
     end   # End of 'fishingz::DB::create_f_and_l_list'
     
-    function fishingz::DB::do_pipeline --no-scope-shadowing
+    function fishingz::DB::pipeline --no-scope-shadowing
   
-      function fn_db_init
+      function fishingz::DB::pipeline::init
   
         fishingz::DB::load_settings
   
@@ -504,10 +504,10 @@ function fishingz
         test ! -d (dirname $FISHINGZ_DB_CALLS) ;
           and mkdir -p (dirname $FISHINGZ_DB_CALLS)
 
-      end   # fn_db_init
+      end   # fishingz::DB::pipeline::init
 
       
-      function fn_db_setup
+      function fishingz::DB::pipeline::setup
   
         test ! -d "$FISHINGZ_DB_TMPDIR" ;and mkdir -p $FISHINGZ_DB_TMPDIR
   
@@ -527,9 +527,9 @@ function fishingz
         else
           echo "$argv[1] was Invalid option" >&2
         end
-      end   # End of fn_db_setup
+      end   # End of fishingz::DB::pipeline::setup
   
-      function fn_db_start --no-scope-shadowing \
+      function fishingz::DB::pipeline::start --no-scope-shadowing \
       --description "create new databese, or update existing database"
   
         set -l target 
@@ -560,28 +560,28 @@ function fishingz
             end
           end
         end
-      end   # End of fn_db_start
+      end   # End of fishingz::DB::pipeline::start
   
-      function fn_db_stop
+      function fishingz::DB::pipeline::stop
       end
   
       # routine start
-      fn_db_init  $argv
-      fn_db_setup $argv
-      fn_db_start $argv
-      fn_db_stop  $argv
+      fishingz::DB::pipeline::init  $argv
+      fishingz::DB::pipeline::setup $argv
+      fishingz::DB::pipeline::start $argv
+      fishingz::DB::pipeline::stop  $argv
   
-    end   # End of 'fishingz::DB::do_pipeline'
+    end   # End of 'fishingz::DB::pipeline'
   
     switch $argv[1]
       case  "-i"    # accessed accessed by 'fishingz_update'
-       fishingz::DB::do_pipeline $argv
+       fishingz::DB::pipeline $argv
       case  "-R"    # accessed accessed by 'fishingz_update'
-       fishingz::DB::do_pipeline $argv
+       fishingz::DB::pipeline $argv
       case  "-m"    # Update mru data
-        fishingz::DB::do_pipeline --save-mru $argv
+        fishingz::DB::pipeline --save-mru $argv
       case  "-g"    # Get path accessed by 'fishingz'
-        fishingz::DB::do_pipeline --get-path $argv[2..-1]
+        fishingz::DB::pipeline --get-path $argv[2..-1]
     end
   
   end   # End of 'fishingz::DB '
@@ -594,7 +594,7 @@ function fishingz
     test ( string match -r -i "\A[t|e|1]" "$FISHINGZ_TOGGLE_USE_SUDO" ) ;
       and set SUDO "sudo"
 
-    function fn_opr_d --no-scope-shadowing \
+    function fishingz::command::opr_d --no-scope-shadowing \
     --description "When [d] is selected on the list"
 
       set -l  path  $argv[1]
@@ -609,10 +609,10 @@ function fishingz
         eval $FISHINGZ_D_CMD $path
         set ptr_EXECLINE "$FISHINGZ_D_CMD $path"
       end
-    end # End of 'fn_opr_d'
+    end # End of 'fishingz::command::opr_d'
   
 
-    function fn_opr_f --no-scope-shadowing \
+    function fishingz::command::opr_f --no-scope-shadowing \
     --description "When [f] is selected on the list"
 
       set -l  path  $argv[1]
@@ -623,11 +623,14 @@ function fishingz
 
         case "text/html*"
           if test ! -z "$FISHINGZ_F_HTML_CMD"
-            setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &
-            set ptr_EXECLINE "setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &"
-          else
-            eval $FISHINGZ_F_CMD $path ;
             set ptr_EXECLINE "$FISHINGZ_F_CMD $path"
+            eval $FISHINGZ_F_CMD $path ;
+          else if test ( which $FISHINGZ_F_HTML_CMD )
+            set ptr_EXECLINE "setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &"
+            setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &
+          else
+            set ptr_EXECLINE "$FISHINGZ_F_CMD $path"
+            eval $FISHINGZ_F_CMD $path ;
           end
         case "text/*"
           if test -w $path 
@@ -660,26 +663,26 @@ function fishingz
             echo "$path: no action" >&2
           end
       end 
-    end  # End of 'fn_opr_f'
+    end  # End of 'fishingz::command::opr_f'
   
 
-    function fn_opr_l  --no-scope-shadowing\
+    function fishingz::command::opr_l  --no-scope-shadowing\
     --description "When [l] is selected on the list" \
     --description "In the case of a symbolic link, judge the file type and open it"
   
       set -l  path  (realpath $argv[1] )    # absolute path without symlink
   
       if test -d $path
-        fn_opr_d $path
+        fishingz::command::opr_d $path
       else if test -f $apach 
-        fn_opr_f $path
+        fishingz::command::opr_f $path
       else
         echo "$path: could not access" >&2
       end
-    end  # End of 'fn_opr_l'
+    end  # End of 'fishingz::command::opr_l'
   
 
-    function fn_opr_m --no-scope-shadowing\
+    function fishingz::command::opr_m --no-scope-shadowing\
     --description "When [M] is selected on the list" \
     --description "In the case of a symbolic link, judge the file type and open it"
       eval $argv
@@ -692,13 +695,13 @@ function fishingz
   
     switch "$type"
       case "[d]"
-        fn_opr_d  $path
+        fishingz::command::opr_d  $path
       case "[f]" 
-        fn_opr_f  $path
+        fishingz::command::opr_f  $path
       case "[l]"
-        fn_opr_l  $path
+        fishingz::command::opr_l  $path
       case "[M]"
-        fn_opr_m  $path
+        fishingz::command::opr_m  $path
       case ""
         #echo '$type was empty...' >&2
       case "*"
@@ -713,7 +716,7 @@ function fishingz
   --description "fishscript can duplicate the function of the location by 'functions'. "
 
     test ! -d $FISHINGZ_WORKDIR ;and mkdir -p $FISHINGZ_WORKDIR
-    set    FISHINGZ_AVATAR   ( mktemp -p $FISHINGZ_WORKDIR 2>/dev/null )
+    set    FISHINGZ_AVATAR   ( mktemp -p $FISHINGZ_WORKDIR )
     functions fishingz      >> $FISHINGZ_AVATAR
     sed -i '1s/^/set   -g  FISHINGZ_ECHO_OFF 1\n/'        $FISHINGZ_AVATAR
     sed -i '1s/^/set   -g  FISHINGZ_AVATAR   (mktemp)\n/' $FISHINGZ_AVATAR
@@ -741,20 +744,20 @@ function fishingz
   end
 
 
-  function fishingz::do_pipeline
+  function fishingz::stream
     set -l ptr_EXECLINE
   
-    function fn_init
+    function fishingz::stream::init
       fishingz::load_userfile
       fishingz::load_settings
       fishingz::verify_settings
     end
     
-    function fn_setup
+    function fishingz::stream::setup
       fishingz::make_avatar
     end
     
-    function fn_start --no-scope-shadowing 
+    function fishingz::stream::start --no-scope-shadowing 
       set -l type
       set -l path
       set -l ptr_RETURNED_PATH
@@ -776,7 +779,7 @@ function fishingz
       end
     end
     
-    function fn_stop
+    function fishingz::stream::stop
 
       test ! -z "$argv" ;and fishingz::DB -m "$argv"
       test   -z "$FISHINGZ_USER_AREA" ;and echo 'Error: $FISHINGZ_USER_AREA is empty' ;and return 255
@@ -786,30 +789,30 @@ function fishingz
     end
   
     if test "$argv" = '--init-only'
-      fn_init $argv
+      fishingz::stream::init $argv
     else if test "$argv" = "--stop-only"
-      fn_stop
+      fishingz::stream::stop
     else
       # initializing on fishingz
-      fn_init  $argv
-      fn_setup $argv
-      fn_start $argv
-      fn_stop  $ptr_EXECLINE
+      fishingz::stream::init  $argv
+      fishingz::stream::setup $argv
+      fishingz::stream::start $argv
+      fishingz::stream::stop  $ptr_EXECLINE
     end
 
-  end   # End of 'function fishingz::do_pipeline'
+  end   # End of 'function fishingz::stream'
 
   if test -z "$argv[1]"
-    fishingz::do_pipeline
+    fishingz::stream
   else if   test "$argv[1]" = "--find-dir"  ;
          or test "$argv[1]" = "--find-file" ;
          or test "$argv[1]" = "--find-link" ;
          or test "$argv[1]" = "--find-mru"
-    fishingz::do_pipeline $argv[1] --ansi
+    fishingz::stream $argv[1] --ansi
   else if test $argv[1] = "-i" ;or test $argv[1] = "-R"
-    fishingz::do_pipeline --init-only
+    fishingz::stream --init-only
     fishingz::DB $argv
-    fishingz::do_pipeline --stop-only
+    fishingz::stream --stop-only
   end
 
 end   # End of 'func fishingz'
