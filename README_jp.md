@@ -4,7 +4,7 @@
 
 　
 
-## <img src="http://placehold.jp/32/ffffff/000000/180x40.png?text=table%20of%20contents">
+## <img src="http://placehold.jp/32/ffffff/000000/180x40.png?text=contents">
 <b><a href="#-1">特徴</a></b><br/>
 <b><a href="#-2">デモ</a></b><br/>
 <b><a href="#-3">インストール手順</a></b><br/>
