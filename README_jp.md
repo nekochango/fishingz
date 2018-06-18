@@ -108,7 +108,7 @@ apt-get install -y xclip
 |C-u C-m|fishingz --find-mru|「履歴」のみを含む DB を使用する。|
 
 　
-
+上表の設定をする場合は以下のように記述すること。  
 ***$HOME/.config/fish/functions/fish_user_key_bindings.fish***  
 ```diff
   function fish_user_key_bindings  
@@ -157,7 +157,7 @@ fishingz -i
 |FISHINGZ_FZF_COLOR|fzfモード時の色設定||
 
 　
-
+上表の設定をする場合は以下のように記述すること。  
 ***$HOME/.fishingz/init.fish***  
 ```
 # Command to execute in case of [f]
