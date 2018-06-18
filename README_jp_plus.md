@@ -49,6 +49,7 @@ fishingz.fish 中の下記を変更すれば良い。(初期状態では、.git 
                                             ""    # End of list
 ```
 
+　
 
 ### :dolphin::dolphin:　　3.　クリップボードへのパスのコピーを行うキーを変更する。
 
@@ -71,7 +72,7 @@ fishingz.fish 中の下記 ctrl-e を変更すれば良い。(詳細は fzf の 
         end
 ```
 
-
+　
 
 ### :dolphin::dolphin:　　4.　ファイル種別に応じて使用するアプリを変更する。
 
