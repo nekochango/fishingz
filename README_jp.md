@@ -108,6 +108,7 @@ apt-get install -y xclip
 |C-u C-m|fishingz --find-mru|「履歴」のみを含む DB を使用する。|
 
 　
+
 上表の設定をする場合は以下のように記述すること。  
 　
 
@@ -172,6 +173,7 @@ fishingz -i
 |
 
 　
+
 上表の設定をする場合は以下のように記述すること。  
 　
 
