@@ -50,7 +50,7 @@
 
 
 
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Setup">
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install">
 
 ### :tropical_fish:　　必要なソフトウェア
 ```diff
@@ -63,7 +63,10 @@
 ```console  
 git clone https://nekochango@github.com/nekochango/fishingz  
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
-```  
+```
+```console
+source $HOME/.config/fish/functions/fishingz.fish
+```
 
 ### :tropical_fish:　　2.　fzf のインストールをする
 - [fzf　:mag:](https://github.com/junegunn/fzf#using-git)
@@ -102,8 +105,9 @@ apt-get install -y xclip
 |C-u C-l|fishingz --find-link|「シンボリックリンクファイル」のみを含む DB を使用する。|
 |C-u C-m|fishingz --find-mru|「履歴」のみを含む DB を使用する。|
 
+　
+
 ***$HOME/.config/fish/functions/fish_user_key_bindings.fish***  
-　  
 ```diff
   function fish_user_key_bindings  
     ### fishingz ###  
@@ -123,3 +127,56 @@ apt-get install -y xclip
 (-- snip --)
 ```
 
+### :tropical_fish:　　2.　DB を構築する
+```console
+fishingz -i
+```
+なお、初期設定では下記ファイルシステムは探索対象外としている。
+```
+/lost+found 　/snap 　/proc 　/sbin 　/media 　/root 　/opt
+/srv 　/cdrom 　/lib64 　/mnt 　/run 　/tmp 　/lib 　/dev
+```
+
+### :tropical_fish:　　3.　fishingz の設定をする
+
+設定ファイルは $HOME/.fishingz/init.fish である。
+
+|変数|処理内容|デフォルト値|
+|---|:--|:--|
+|FISHINGZ_F_CMD|テキストファイルの場合に使用したいアプリケーション|nano|
+|FISHINGZ_F_HTML_CMD|HTMLの場合に使用したいアプリケーション|firefox|
+|FISHINGZ_DB_REBUILD_THLD|DB 再構築までに必要とする fishingz の使用回数|50|
+|FISHINGZ_TOGGLE_USE_SUDO|読み取り専用の場合に sudo を使うか？(0:使わない、1:使う)|0:使わない|
+|FISHINGZ_NPROC_ON_REBUILD|DB 再構築時に使用する CPU の個数|1個|
+|FISHINGZ_COLOR_D|DB オープン時のディレクトリの表示色||
+|FISHINGZ_COLOR_F|DB オープン時のファイルの表示色||
+|FISHINGZ_COLOR_L|DB オープン時のシンボリックリンクの表示色||
+|FISHINGZ_COLOR_M|DB オープン時の MRU の表示色||
+|FISHINGZ_FZF_COLOR|fzfモード時の色設定||
+
+***$HOME/.fishingz/init.fish***  
+```
+# Command to execute in case of [f]
+set -g FISHINGZ_F_CMD             "vim"
+set -g FISHINGZ_F_HTML_CMD        "google-chrome"
+
+# It represents how many times fishingz is updated when it is updated
+set -g  FISHINGZ_DB_REBUILD_THLD  50      # 50 <default>
+
+# use sudo, when you can not writ file (1:use sudo, 0: not use <default> )
+set -g FISHINGZ_TOGGLE_USE_SUDO   1
+
+# execute it, if it have +x permission (1:execute,  0: not execute <default> )
+set -g FISHINGZ_TOGGLE_EXEC_MODE  0
+
+# Number of Core to use when rebuilding DB
+set -g FISHINGZ_NPROC_ON_REBUILD  1
+
+# fzf color settings.
+# 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
+set -g  FISHINGZ_COLOR_D  32m       # [d] directory
+set -g  FISHINGZ_COLOR_F  36m       # [f] file
+set -g  FISHINGZ_COLOR_L  35m       # [l] symlink
+set -g  FISHINGZ_COLOR_H  33m       # [H] MRU
+set -g  FISHINGZ_FZF_COLOR "--color=hl:#ff00b0,bg+:#666666"
+```
