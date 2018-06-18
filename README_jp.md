@@ -1,5 +1,5 @@
-# <img src="http://placehold.jp/28/39aaff/ffffff/180x40.png?text=fishingz">
-fishingz = ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。
+# <img src="http://placehold.jp/28/39aaff/aaff00/180x40.png?text=fishingz">
+ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=特徴">
 ### :whale: パス情報(以降、DB とする)を使って高速に全ファイルシステムにアクセスする  
