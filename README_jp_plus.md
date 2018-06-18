@@ -8,6 +8,7 @@
 ### :dolphin::dolphin:　　1.　探索対象外のファイルシステムを変更する
 
 　
+
 fishingz.fish 中の下記を変更すれば良い。
 　
 
@@ -37,6 +38,7 @@ fishingz.fish 中の下記を変更すれば良い。
 ### :dolphin::dolphin:　　2.　探索対象外のディレクトリを変更する
 
 　
+
 fishingz.fish 中の下記を変更すれば良い。(初期状態では、.git .cache .svn .CVS を探索対象外としている)
 　
 
@@ -53,6 +55,7 @@ fishingz.fish 中の下記を変更すれば良い。(初期状態では、.git 
 ### :dolphin::dolphin:　　3.　クリップボードへのパスのコピーを行うキーを変更する。
 
 　
+
 fishingz.fish 中の下記 ctrl-e を変更すれば良い。(詳細は fzf の --bind を参照)
 　
 
@@ -76,6 +79,7 @@ fishingz.fish 中の下記 ctrl-e を変更すれば良い。(詳細は fzf の 
 ### :dolphin::dolphin:　　4.　ファイル種別に応じて使用するアプリを変更する。
 
 　
+
 fishingz.fish 中の下記 file -b -i の戻り値を分岐させて呼び出すアプリを定義すれば良い。
 　
 
