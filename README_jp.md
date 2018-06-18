@@ -74,8 +74,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
  　
 ### :tropical_fish:　　xclip のインストールをする
 - [xclip](https://github.com/astrand/xclip)
-<b>管理者権限が無い場合  </b>
-+ コンパイルをして xclip を作成する。  
+管理者権限が無い場合は、コンパイルをして xclip を作成する。  
 ```console
 git clone https://github.com/astrand/xclip
 autoreconf		# create configuration files
@@ -83,8 +82,7 @@ autoreconf		# create configuration files
 make			# build the binary
 ```
 
-<b>管理者権限がある場合  </b>
-+apt-get install でインストールする。  
+管理者権限がある場合は<b>apt-get install</b>でインストールする。  
 ```console
 apt-get install -y xclip
 ```
