@@ -66,15 +66,15 @@ cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.
 ```  
 
 ### :tropical_fish:　　fzf のインストールをする
-- **fzf** [:mag: installation by git.](https://github.com/junegunn/fzf#using-git)
+- **fzf** [:mag: 公式サイト](https://github.com/junegunn/fzf#using-git)
 ```console
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 ```
  　
 ### :tropical_fish:　　xclip のインストールをする
-- **xclip** [:mag: installation by git.](https://github.com/astrand/xclip)
-<b>管理者権限が無い場合</b>
+- **xclip** [:mag: 公式？サイト](https://github.com/astrand/xclip)
+<b>管理者権限が無い場合</b>   
 + コンパイルをして xclip を作成する。  
 ```console
 git clone https://github.com/astrand/xclip
@@ -83,7 +83,7 @@ autoreconf		# create configuration files
 make			# build the binary
 ```
 
-<b>管理者権限がある場合</b>
+<b>管理者権限がある場合</b>   
 +apt-get install でインストールする。  
 ```console
 apt-get install -y xclip
