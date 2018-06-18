@@ -179,7 +179,7 @@ fishingz -i
 |FISHINGZ_COLOR_L|DB オープン時のシンボリックリンクの表示色|35m (purple)|
 |FISHINGZ_COLOR_M|DB オープン時の MRU の表示色|33m (yellow)|
 |FISHINGZ_FZF_COLOR|fzfモード時の色設定||
-|
+
 
 　
 
