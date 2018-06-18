@@ -96,7 +96,7 @@ autoreconf		# create configuration files
 make			# build the binary
 ```
 
-管理者権限がある場合は<b>apt-get install</b>でインストールする。  
+管理者権限がある場合は <b>apt-get install</b> でインストールする。  
 ```console
 apt-get install -y xclip
 ```
