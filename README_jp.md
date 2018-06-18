@@ -73,7 +73,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ```
  　
 ### :tropical_fish:　　xclip のインストールをする
-- [xclip](https://github.com/astrand/xclip)
+- [xclip](https://github.com/astrand/xclip)  
 管理者権限が無い場合は、コンパイルをして xclip を作成する。  
 ```console
 git clone https://github.com/astrand/xclip
