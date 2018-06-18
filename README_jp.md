@@ -24,7 +24,7 @@
 
 ### :whale: 初回の DB 構築は高速化対応を施した
 ```diff
-+ DB 初回作成時のみマシンスペックを最大限に使って DB を構築を高速に行う
++ DB 初回作成時のみマシンスペックを最大限に使って
 ```
 
 ### :whale: 2回目以降の DB 更新は自動的に行われる
@@ -148,6 +148,10 @@ fishingz -i
 　
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Advanced%20Setup">
+
+
+以下は必要に応じて行えば良い。
+　 
 
 ### :dolphin:　　1.　fishingz の設定をする
 
