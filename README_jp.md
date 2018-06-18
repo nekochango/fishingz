@@ -43,9 +43,8 @@
 ![open_a_locatedb](https://user-images.githubusercontent.com/39640214/41501398-9ff0be4e-71de-11e8-8720-41733d6c0f7e.gif)
 
 #### :fish: 2　パスを選択する
-+ fzf により絞り込みを行う。  
-+ 下図では /etcapac2site としてディレクトリを絞り込む。  
-+ <b>[d]  /etc/apache2/sites-enabled </b>の行を選択する。  
++ fzf により /etcapac2site として絞り込みを行う。  
++ 目標の <b>[d]  /etc/apache2/sites-enabled </b>を選択する。  
 + 以上の操作で<b> cd /etc/apache2/sites-enabled </b>が実行された。
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
 　
