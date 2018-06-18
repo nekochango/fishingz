@@ -74,7 +74,7 @@ source $HOME/.config/fish/functions/fishingz.fish
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 ```
- 　
+
 ### :tropical_fish:　　3.　xclip のインストールをする
 - [xclip　:mag:](https://github.com/astrand/xclip)  
 
@@ -91,7 +91,7 @@ make			# build the binary
 apt-get install -y xclip
 ```
 
-　
+
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Setup">
 
 
@@ -153,6 +153,8 @@ fishingz -i
 |FISHINGZ_COLOR_L|DB オープン時のシンボリックリンクの表示色||
 |FISHINGZ_COLOR_M|DB オープン時の MRU の表示色||
 |FISHINGZ_FZF_COLOR|fzfモード時の色設定||
+
+　
 
 ***$HOME/.fishingz/init.fish***  
 ```
