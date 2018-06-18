@@ -7,7 +7,7 @@
 ### :whale: DB を使った高速アクセス
 ```diff
 + DB をオープンして目的のパスを選択する。
-+　　- いちいちアクセスの度に探索はしない
++　　- アクセスの度にパスの洗い出し(findコマンド実施)はしない
 + 選択したパスの種類に応じて以下のように処理が自動的に実行される。
 +　　-「ディレクトリ」であれば、cd を実行する
 +　　- HTML であれば Web ブラウザで開く
@@ -50,7 +50,7 @@
 
 
 
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Install">
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Setup">
 
 ### :tropical_fish:　　必要なソフトウェア
 ```diff
@@ -59,20 +59,20 @@
 + 　　　xclip もしくは xsel
 ```  
 
-### :tropical_fish:　　fishingz のインストールをする
+### :tropical_fish:　　1.　fishingz のインストールをする
 ```console  
 git clone https://nekochango@github.com/nekochango/fishingz  
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
 ```  
 
-### :tropical_fish:　　fzf のインストールをする
+### :tropical_fish:　　2.　fzf のインストールをする
 - [fzf　:mag:](https://github.com/junegunn/fzf#using-git)
 ```console
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 ```
  　
-### :tropical_fish:　　xclip のインストールをする
+### :tropical_fish:　　3.　xclip のインストールをする
 - [xclip　:mag:](https://github.com/astrand/xclip)  
 
 管理者権限が無い場合は、コンパイルをして xclip を作成する。  
@@ -86,5 +86,40 @@ make			# build the binary
 管理者権限がある場合は<b>apt-get install</b>でインストールする。  
 ```console
 apt-get install -y xclip
+```
+
+　
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Setup">
+
+
+### :tropical_fish:　　1.　fishingz を呼び出すためのキーバインディングをする
+
+|キー|対応コマンド|処理内容|
+|---|---|:--|
+|C-u C-u|fishingz|「ディレクトリ」「ファイル」「シンボリックリンク」「履歴」全てを含む DB を使用する。|
+|C-u C-i|fishingz --find-dir|「ディレクトリ」のみを含む DB を使用する。|
+|C-u C-f|fishingz --find-file|「ファイル」のみを含む DB を使用する。|
+|C-u C-l|fishingz --find-link|「シンボリックリンクファイル」のみを含む DB を使用する。|
+|C-u C-m|fishingz --find-mru|「履歴」のみを含む DB を使用する。|
+
+***$HOME/.config/fish/functions/fish_user_key_bindings.fish***  
+　  
+```diff
+  function fish_user_key_bindings  
+    ### fishingz ###  
++   bind \cu\cu 'fishingz             ; commandline -f repaint'
++   bind \cu\ci 'fishingz --find-dir  ; commandline -f repaint'
++   bind \cu\cf 'fishingz --find-file ; commandline -f repaint'
++   bind \cu\cl 'fishingz --find-link ; commandline -f repaint'
++   bind \cu\cm 'fishingz --find-mru  ; commandline -f repaint'
+
+    fzf_key_bindings
+    ### fzf ###
+    if test "$FZF_LEGACY_KEYBINDINGS" -eq 1
+        bind \ct '__fzf_find_file'
+        bind \cr '__fzf_reverse_isearch'
+        bind \ec '__fzf_cd'
+        bind \eC '__fzf_cd --hidden'
+(-- snip --)
 ```
 
