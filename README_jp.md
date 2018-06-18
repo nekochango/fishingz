@@ -1,6 +1,8 @@
 # <img src="http://placehold.jp/32/ffffff/00eeaa/180x40.png?text=fishingz">
 ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。
 
+　
+
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=特徴">
 ### :whale: パス情報(以降、DB とする)を使って高速に全ファイルシステムにアクセスする  
 ```diff
@@ -26,6 +28,7 @@
 + DB 初回作成時のみ fishingz -i として手動実行が必要であるが、マシンスペックを最大限に使って DB を構築を高速に行う
 ```
 
+　
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ">
 ### /etc/apache2/sites-enabled ディレクトリに移動する
