@@ -1,4 +1,4 @@
-# <img src="http://placehold.jp/32/39aaff/ff0000/180x40.png?text=fishingz">
+# <img src="http://placehold.jp/32/39aaff/fa96a6/180x40.png?text=fishingz">
 ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。
 
 　
