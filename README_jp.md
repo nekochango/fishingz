@@ -1,5 +1,5 @@
 # <img src="http://placehold.jp/32/39aaff/000000/180x40.png?text=fishingz">
-ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。
+ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。　　
 事前に収集したパス情報(以降、DB とする)を基にしてアクセスをする。
 
 　
