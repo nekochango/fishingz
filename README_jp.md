@@ -1,8 +1,6 @@
 ## <img src="http://placehold.jp/28/39aaff/ffffff/180x40.png?text=fishingz">
 fishingz = ファイルシステム全てに高速アクセスするための fish shell 専用のプラグイン。  
 次の特徴を持つ。 
-タグを<span style="color:red">直接記述</span>することで<span style="color:blue">色</span>を変えます。  
-
 
 ### :whale: パス情報(以降、DB とする)を使って高速に全ファイルシステムにアクセスする  
 ```diff
