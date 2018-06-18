@@ -131,6 +131,8 @@ apt-get install -y xclip
 (-- snip --)
 ```
 
+　
+
 ### :tropical_fish:　　2.　DB を構築する
 ```console
 fishingz -i
@@ -141,7 +143,13 @@ fishingz -i
 /srv 　/cdrom 　/lib64 　/mnt 　/run 　/tmp 　/lib 　/dev
 ```
 
-### :tropical_fish:　　3.　fishingz の設定をする
+以上で fishingz が使用可能になった。
+
+　
+
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Advanced%20Setup">
+
+### :dolphin:　　1.　fishingz の設定をする
 
 設定ファイルは $HOME/.fishingz/init.fish である。
 
@@ -152,11 +160,12 @@ fishingz -i
 |FISHINGZ_DB_REBUILD_THLD|DB 再構築までに必要とする fishingz の使用回数|50|
 |FISHINGZ_TOGGLE_USE_SUDO|読み取り専用の場合に sudo を使うか？(0:使わない、1:使う)|0:使わない|
 |FISHINGZ_NPROC_ON_REBUILD|DB 再構築時に使用する CPU の個数|1個|
-|FISHINGZ_COLOR_D|DB オープン時のディレクトリの表示色||
-|FISHINGZ_COLOR_F|DB オープン時のファイルの表示色||
-|FISHINGZ_COLOR_L|DB オープン時のシンボリックリンクの表示色||
-|FISHINGZ_COLOR_M|DB オープン時の MRU の表示色||
+|FISHINGZ_COLOR_D|DB オープン時のディレクトリの表示色|32m (green)|
+|FISHINGZ_COLOR_F|DB オープン時のファイルの表示色|36m (cyan)|
+|FISHINGZ_COLOR_L|DB オープン時のシンボリックリンクの表示色|35m (purple)|
+|FISHINGZ_COLOR_M|DB オープン時の MRU の表示色|33m (yellow)|
 |FISHINGZ_FZF_COLOR|fzfモード時の色設定||
+|
 
 　
 上表の設定をする場合は以下のように記述すること。  
@@ -187,4 +196,100 @@ set -g  FISHINGZ_COLOR_F  36m       # [f] file
 set -g  FISHINGZ_COLOR_L  35m       # [l] symlink
 set -g  FISHINGZ_COLOR_H  33m       # [H] MRU
 set -g  FISHINGZ_FZF_COLOR "--color=hl:#ff00b0,bg+:#666666"
+```
+
+　
+
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=___future___">
+
+まだ、$HOME/.fishingz/init.fish での設定はできず、ソースコードを直接変更する必要がある設定項目について記す。
+　
+
+### :dolphin:　　1.　探索対象外のファイルシステムを変更する
+
+　
+fishingz.fish 中の下記を変更すれば良い。
+　
+
+***$HOME/.config/fish/functions/fishingz.fish***
+```
+      # No searchable directories, when creating database
+      set -g    FISHINGZ_EXCLUDE_FS         "/lost+found/" \
+                                            "/snap/"       \
+                                            "/proc/"       \
+                                            "/sbin/"       \
+                                            "/media/"      \
+                                            "/root/"       \
+                                            "/opt/"        \
+                                            "/srv/"        \
+                                            "/cdrom/"      \
+                                            "/lib64/"      \
+                                            "/mnt/"        \
+                                            "/run/"        \
+                                            "/tmp/"        \
+                                            "/lib/"        \
+                                            "/dev/"        \
+                                            ""    # End of list
+```  
+
+　
+
+### :dolphin:　　2.　探索対象外のディレクトリを変更する
+
+　
+fishingz.fish 中の下記を変更すれば良い。(初期状態では、.git .cache .svn .CVS を探索対象外としている)
+　
+
+***$HOME/.config/fish/functions/fishingz.fish***
+```
+      set -g    FISHINGZ_EXCLUDE_DIR        "-o -name '.git'"     \
+                                            "-o -name '.cache'"   \
+                                            "-o -name '.svn'"     \
+                                            "-o -name '.CVS'"     \
+                                            ""    # End of list
+```
+
+
+### :dolphin:　　3.　クリップボードへのパスのコピーを行うキーを変更する。
+
+　
+fishingz.fish 中の下記 ctrl-e を変更すれば良い。(詳細は fzf の --bind を参照)
+　
+
+***$HOME/.config/fish/functions/fishingz.fish***
+```
+        if test ( which xclip )
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
+                                    --bind 'ctrl-e:execute-silent( echo -n {} | \
+                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xclip   ; tput rc )+abort' )
+        else if test ( which xsel )
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
+                                    --bind 'ctrl-e:execute-silent( echo -n {} | \
+                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xsel -i ; tput rc )+abort' )
+        else
+          set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort --ansi -d'\t' --nth 2 )
+        end
+```
+
+
+
+### :dolphin:　　4.　ファイル種別に応じて使用するアプリを変更する。
+
+　
+fishingz.fish 中の下記 file -b -i の戻り値を分岐させて呼び出すアプリを定義すれば良い。
+　
+
+***$HOME/.config/fish/functions/fishingz.fish***
+```diff
+    function fishingz::command::opr_f --no-scope-shadowing \
+    --description "When [f] is selected on the list"
+
+      set -l  path  $argv[1]
+      test ! -f $path ;and echo "$path: No such file" >&2
+      set -l  ftype ( file -b -i $path )
+  
+      switch $ftype
+
+        case "text/html*"
+        
 ```
