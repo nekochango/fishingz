@@ -7,9 +7,11 @@
 ## <img src="http://placehold.jp/32/39aaff/444444/180x40.png?text=contents">
 <b><a href="#-2">特徴</a></b><br/>
 <b><a href="#-3">デモ(1)</a></b><br/>
-<b><a href="#-4">インストール手順</a></b><br/>
-<b><a href="#-5">セットアップ手順</a></b><br/>
-<b><a href="#-6">高度な設定</a></b><br/>
+<b><a href="#-4">デモ(2)</a></b><br/>
+<b><a href="#-5">デモ(3)</a></b><br/>
+<b><a href="#-6">インストール手順</a></b><br/>
+<b><a href="#-7">セットアップ手順</a></b><br/>
+<b><a href="#-8">高度な設定</a></b><br/>
 
 　
 
