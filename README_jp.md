@@ -85,7 +85,7 @@
 
 ### :tropical_fish:　　1.　fishingz のインストールをする
 ```console  
-git clone https://nekochango@github.com/nekochango/fishingz  
+git clone https://github.com/nekochango/fishingz  
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
 ```
 ```console
