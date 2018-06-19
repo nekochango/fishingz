@@ -6,7 +6,7 @@
 
 ## <img src="http://placehold.jp/32/39aaff/444444/180x40.png?text=contents">
 <b><a href="#-2">特徴</a></b><br/>
-<b><a href="#-3">デモ</a></b><br/>
+<b><a href="#-3">デモ(1)</a></b><br/>
 <b><a href="#-4">インストール手順</a></b><br/>
 <b><a href="#-5">セットアップ手順</a></b><br/>
 <b><a href="#-6">高度な設定</a></b><br/>
@@ -46,7 +46,7 @@
 
 　
 
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ">
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ(1)">
 ### /etc/apache2/sites-enabled ディレクトリに移動する
 #### :fish: 1　DB を開く
 + コマンドラインから C-u C-u と入力することで DB をオープンする。(キーは変更可能) 
@@ -57,6 +57,18 @@
 + 目標の <b>[d]  /etc/apache2/sites-enabled </b>を選択する。  
 + 以上の操作で<b> cd /etc/apache2/sites-enabled </b>が実行された。
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
+
+　
+
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ(2)">
+### /home/neko/.local/share/fish/generate_completions/fzf-tmux.fish を nvim-qt で開く
+#### :fish: 1　ファイル用の DB を開く
++ コマンドラインから C-u C-f と入力することで ファイル用 DB をオープンする。(キーは変更可能) 
+
+#### :fish: 2　パスを選択する
++ fzf により fishfzf.fish として絞り込みを行う。
++ 目標の <b>/home/neko/.local/share/fish/generate_completions/fzf-tmux.fish</b> を選択する。  
+![demo_f](https://user-images.githubusercontent.com/39640214/41606895-b448e1da-741f-11e8-9388-0b3b85ba016d.gif)
 
 　
 
