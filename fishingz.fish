@@ -1,5 +1,5 @@
 #!/usr/bin/env fish
-#
+
 function fishingz 
 
   function fishingz::load_userfile
@@ -98,7 +98,7 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.6.0
+      set -g    FISHINGZ_DB_VERSION        1.7.0
       set -g    FISHINGZ_LOCKFILE          _____updating_____.lock
   
     end   # End of 'fishingz::DB::load_settings'
@@ -113,7 +113,7 @@ function fishingz
         set   target            $argv
         # Delete elements written in $FISHINGZ_EXCLUDE_FS from $found_path
         for i in ( seq 1 (count $FISHINGZ_EXCLUDE_FS) )
-          set -l omission ( echo $FISHINGZ_EXCLUDE_FS[$i] | sed 's:/$::g' )
+          set -l omission ( echo $FISHINGZ_EXCLUDE_FS[$i] | sed 's|/$||g' )
           set    target   ( string replace -r "\A$omission\z" '' $target )
         end
       end   # End of function fishingz::DB::build::prepare
@@ -156,13 +156,13 @@ function fishingz
   
           # join 3 files
           test -f $FISHINGZ_DB_DIR_PATH  ;
-          and sed "s/.*/[1;$FISHINGZ_COLOR_D\[d\]\t&[0m/g" $FISHINGZ_DB_DIR_PATH  >> $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE
+          and sed "s|.*|[1;$FISHINGZ_COLOR_D\[d\]\t&[0m|g" $FISHINGZ_DB_DIR_PATH  >> $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE
     
           test -f $FISHINGZ_DB_FILE_PATH ;
-          and sed "s/.*/[1;$FISHINGZ_COLOR_F\[f\]\t&[0m/g" $FISHINGZ_DB_FILE_PATH >> $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE
+          and sed "s|.*|[1;$FISHINGZ_COLOR_F\[f\]\t&[0m|g" $FISHINGZ_DB_FILE_PATH >> $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE
     
           test -f $FISHINGZ_DB_LINK_PATH ;
-          and sed "s/.*/[1;$FISHINGZ_COLOR_L\[l\]\t&[0m/g" $FISHINGZ_DB_LINK_PATH >> $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE
+          and sed "s|.*|[1;$FISHINGZ_COLOR_L\[l\]\t&[0m|g" $FISHINGZ_DB_LINK_PATH >> $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE
     
           # replace database file
           cp -fp $FISHINGZ_DB_TMPDIR/$FISHINGZ_DB_FILE $FISHINGZ_DB_DIRNAME/$FISHINGZ_DB_FILE
@@ -199,7 +199,7 @@ function fishingz
           set M ( egrep -n "\[d\]	$index\[0m" $database | cut -f1 -d':' )
           if test ! -z $FISHINGZ_HISTSIZE
             tail -n $FISHINGZ_HISTSIZE $FISHINGZ_DB_MRU_PATH | tac | \
-              sed  "s:\(.*\):[1;$FISHINGZ_COLOR_M\[M]	&[0m:g" 
+              sed  "s|\(.*\)|[1;$FISHINGZ_COLOR_M\[M]	&[0m|g" 
           end
 
           if test -z "$M"
@@ -236,19 +236,19 @@ function fishingz
           end
 
           if test -z "$M" ;and test $filter = "--find-mru"
-            test ! -z "$color" ;and sed "s/.*/[1;$color&[0m/g" $database | tac
+            test ! -z "$color" ;and sed "s|.*|[1;$color&[0m|g" $database | tac
                                ;or  tac $database 
           else if test -z "$M"
             # I am in a location that is not registered in the DB
-            test ! -z "$color" ;and sed "s/.*/[1;$color&[0m/g" $database 
+            test ! -z "$color" ;and sed "s|.*|[1;$color&[0m|g" $database 
                                ;or  cat $database
           else if test "$M" -eq 1
-            test ! -z "$color" ;and sed "s/.*/[1;$color&[0m/g" $database 
+            test ! -z "$color" ;and sed "s|.*|[1;$color&[0m|g" $database 
                                ;or  cat $database
           else if test "$M" -eq 2
             if test ! -z "$color"
-              sed -n '2,$'p $database | sed "s/.*/[1;$color&[0m/g"       
-              sed -n 1p     $database | sed "s/.*/[1;$color&[0m/g" | tac 
+              sed -n '2,$'p $database | sed "s|.*|[1;$color&[0m|g"       
+              sed -n 1p     $database | sed "s|.*|[1;$color&[0m|g" | tac 
             else
               sed -n '2,$'p $database  
               sed -n 1p     $database  
@@ -256,8 +256,8 @@ function fishingz
           else
             if test ! -z "$color"
               set  B      ( expr $M - 1 ) # before from $M
-              sed -n "$M,\$"p $database | sed "s/.*/[1;$color&[0m/g"
-              sed -n "1,$B"p  $database | sed "s/.*/[1;$color&[0m/g" | tac
+              sed -n "$M,\$"p $database | sed "s|.*|[1;$color&[0m|g"
+              sed -n "1,$B"p  $database | sed "s|.*|[1;$color&[0m|g" | tac
             else
               set  B      ( expr $M - 1 ) # before from $M
               sed -n "$M,\$"p  $database
@@ -275,11 +275,11 @@ function fishingz
         if test ( which xclip )
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
                                     --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xclip   ; tput rc )+abort' )
+                                    sed -n "s|^\[[[:alpha:]]\]\(.*\)|\1|p" | xclip   ; tput rc )+abort' )
         else if test ( which xsel )
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
                                     --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                    sed -n "s/^\[[[:alpha:]]\]\(.*\)/\1/p" | xsel -i ; tput rc )+abort' )
+                                    sed -n "s|^\[[[:alpha:]]\]\(.*\)|\1|p" | xsel -i ; tput rc )+abort' )
         else
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort --ansi -d'\t' --nth 2 )
         end
@@ -337,9 +337,9 @@ function fishingz
       if test ! -z "$argv" 
         test ! -f $FISHINGZ_DB_MRU_PATH ;and touch $FISHINGZ_DB_MRU_PATH 
   
-        set -l ret ( sed -n "\:^$argv\$:p" $FISHINGZ_DB_MRU_PATH )
+        set -l ret ( sed -n "\|^$argv\$|p" $FISHINGZ_DB_MRU_PATH )
         if test ! -z "$ret"
-          sed -i "\:^$argv:d"  $FISHINGZ_DB_MRU_PATH
+          sed -i "\|^$argv|d"  $FISHINGZ_DB_MRU_PATH
         end
       end
   
@@ -440,7 +440,7 @@ function fishingz
         set script_chld  "$FISHINGZ_DB_TMPDIR/$type/find_$t.$i.fish"
      
         # write in process tha execute find -f
-        cat   $input | sed -n "$b,$e s:.*:find \"&\" -maxdepth 1 -type $t 2>/dev/null >> $workdir/$b.$e.list:p" > $script_chld
+        cat   $input | sed -n "$b,$e s|.*|find \"&\" -maxdepth 1 -type $t 2>/dev/null >> $workdir/$b.$e.list|p" > $script_chld
      
         set b ( expr $e + 1    )  # begin line
         set e ( expr $b + $sep )  # end line
@@ -718,8 +718,8 @@ function fishingz
     test ! -d $FISHINGZ_WORKDIR ;and mkdir -p $FISHINGZ_WORKDIR
     set    FISHINGZ_AVATAR   ( mktemp -p $FISHINGZ_WORKDIR )
     functions fishingz      >> $FISHINGZ_AVATAR
-    sed -i '1s/^/set   -g  FISHINGZ_ECHO_OFF 1\n/'        $FISHINGZ_AVATAR
-    sed -i '1s/^/set   -g  FISHINGZ_AVATAR   (mktemp)\n/' $FISHINGZ_AVATAR
+    sed -i '1s|^|set   -g  FISHINGZ_ECHO_OFF 1\n|'        $FISHINGZ_AVATAR
+    sed -i '1s|^|set   -g  FISHINGZ_AVATAR   (mktemp)\n|' $FISHINGZ_AVATAR
     sed -i '$a fishingz $argv' $FISHINGZ_AVATAR
   end
 
