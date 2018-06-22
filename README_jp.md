@@ -75,15 +75,15 @@
 　
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=デモ(3)">
-### Ctrl-e で DB からパス情報のみコピーする
+### Ctrl-k で DB からパス情報のみコピーする
 #### :fish: 1　ファイル用の DB を開く
 + コマンドラインから C-u C-i と入力することで ディレクトリ用 DB をオープンする。(キーは変更可能) 
 
 #### :fish: 2　パスを選択する
 + /etc/systemd にカーソルを合わせる
-+ Ctrl-e を押下して、 /etc/systemd をクリップボードにコピーする
++ Ctrl-k を押下して、 /etc/systemd をクリップボードにコピーする (キーは変更可能)
 + Shift-Insert によりコンソールにペーストする
-![ctrle](https://user-images.githubusercontent.com/39640214/41609045-e1553aa2-7424-11e8-90ae-5f2d63ec8fca.gif)
+![ctrlk](https://user-images.githubusercontent.com/39640214/41803236-c112332c-76c1-11e8-920a-c986c656e75a.gif)
 
 
 　
