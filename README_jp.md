@@ -198,18 +198,19 @@ fishingz -i
 
 |変数|処理内容|デフォルト値|
 |---|:--|:--|
-|FISHINGZ_F_CMD|テキストファイルの場合に使用したいアプリケーション|nano|
-|FISHINGZ_F_HTML_CMD|HTMLの場合に使用したいアプリケーション|firefox|
-|FISHINGZ_DB_REBUILD_THLD|DB 再構築までに必要とする fishingz の使用回数|50|
-|FISHINGZ_TOGGLE_USE_SUDO|読み取り専用の場合に sudo を使うか？(0:使わない、1:使う)|0:使わない|
+|FISHINGZ_F_ACTIONS|ファイル種別に応じて使用したいアプリケーションを定義する||
+|FISHINGZ_DB_REBLD_THLD_C|DB 再構築までに必要とする fishingz の使用回数|50|
+|FISHINGZ_DB_REBLD_THLD_T|DB 再構築までの経過時間(sec)|86400(sec)=1day|
 |FISHINGZ_NPROC_ON_REBUILD|DB 再構築時に使用する CPU の個数|1個|
+|FISHINGZ_HISTMAX|保持する MRU の個数|1000|
 |FISHINGZ_COLOR_D|DB オープン時のディレクトリの表示色|32m (green)|
 |FISHINGZ_COLOR_F|DB オープン時のファイルの表示色|36m (cyan)|
 |FISHINGZ_COLOR_L|DB オープン時のシンボリックリンクの表示色|35m (purple)|
 |FISHINGZ_COLOR_M|DB オープン時の MRU の表示色|33m (yellow)|
 |FISHINGZ_FZF_COLOR|fzfモード時の色設定||
-
-
+|FISHINGZ_HISTMAX|fzfモード時の一行コピー処理のキー設定||
+|FISHINGZ_EXCLUDE_FS|DB の対象外としたいファイルシステム|/lost+found, /snap, /proc, /sbin, ...|
+|FISHINGZ_EXCLUDE_DIR|DB の対象外としたいディレクトリ|.git, .svn, CVS|
 　
 
 上表の設定をする場合は以下のように記述すること。  
@@ -217,24 +218,50 @@ fishingz -i
 
 ***$HOME/.fishingz/init.fish***  
 ```
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # Command to execute in case of [f]
-set -g FISHINGZ_F_CMD             "vim"
-set -g FISHINGZ_F_HTML_CMD        "google-chrome"
+# file-type : command : use sudo when readonly file : redirect : background 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+set -g  FISHINGZ_F_ACTIONS  '
+  "text/html"       : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "application/xml" : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "text/html"       : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+  "text/xml"        : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+  "text"            : "nvim"                 : "sudo" : ""                        : ""   
+  "image"           : "setsid xdg-open"      : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "inode/x-empty"   : "nvim"                 : ""     : ""                        : ""
+'
 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# No searchable top directories, when creating database
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+set -g  FISHINGZ_EXCLUDE_FS   "/mnt"  "/srv"  "/lib"  "/lib64"  
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# No searchable directories, when creating database
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+set -g FISHINGZ_EXCLUDE_DIR  ".mozilla"  ".cache"
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # It represents how many times fishingz is updated when it is updated
-set -g  FISHINGZ_DB_REBUILD_THLD  50      # 50 <default>
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+set -g  FISHINGZ_DB_REBLD_THLD_C  50      # 50 reps
+set -g  FISHINGZ_DB_REBLD_THLD_T  86400   # 1day=3600(sec)*24
 
-# use sudo, when you can not writ file (1:use sudo, 0: not use <default> )
-set -g FISHINGZ_TOGGLE_USE_SUDO   1
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# the number of lines or commands that (a) are allowed in the history file 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+set -g  FISHINGZ_HISTMAX          10000
 
-# execute it, if it have +x permission (1:execute,  0: not execute <default> )
-set -g FISHINGZ_TOGGLE_EXEC_MODE  0
-
-# Number of Core to use when rebuilding DB
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# Number of Core to use when re-building DB
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 set -g FISHINGZ_NPROC_ON_REBUILD  1
 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # fzf color settings.
 # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 set -g  FISHINGZ_COLOR_D  32m       # [d] directory
 set -g  FISHINGZ_COLOR_F  36m       # [f] file
 set -g  FISHINGZ_COLOR_L  35m       # [l] symlink
