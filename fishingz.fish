@@ -11,23 +11,29 @@ function fishingz
   function fishingz::load_settings \
   --description "The command written here is called in 'fishingz::stream::opr_f'."
 
-    # command to call in the case of file
-    test -z "$FISHINGZ_F_CMD"             ;and set -g FISHINGZ_F_CMD      "nano"
-    # command to call in the case of HTML file
-    test -z "$FISHINGZ_F_HTML_CMD"        ;and set -g FISHINGZ_F_HTML_CMD "firefox"
-    # command to call in the case of directory
-    test -z "$FISHINGZ_D_CMD"             ;and set -g FISHINGZ_D_CMD      "cd"
-    # command to use in the background to call in the case of directory
-#   test -z "$FISHINGZ_JORKER"            ;and set -g FISHINGZ_JORKER     "xdg-open"
-    # use sudo, when you can not writ file (1:use sudo, 0: not use)
-    test -z "$FISHINGZ_TOGGLE_USE_SUDO"   ;and set -g FISHINGZ_TOGGLE_USE_SUDO   0
-    # execute it, if it have +x permission (1:execute,  0: not execute)
-    test -z "$FISHINGZ_TOGGLE_EXEC_MODE"  ;and set -g FISHINGZ_TOGGLE_EXEC_MODE  0
-
     set -g    FISHINGZ_UUID                 (uuidgen)
     set -g    FISHINGZ_USER_AREA            /tmp/$USER.fishingz
     set -g    FISHINGZ_WORKDIR              $FISHINGZ_USER_AREA/$FISHINGZ_UUID
     set -g    FISHINGZ_AVATAR
+
+    # command to call in the case of directory
+    test -z "$FISHINGZ_D_CMD"             ;and set -g FISHINGZ_D_CMD      "cd"
+
+    # command to call in the case of file
+    set -l    ____FISHINGZ_F_ACTIONS____    '
+      "text/html"       : "setsid firefox      " : ""     : "1>/dev/null 2>/dev/null" : "&"  
+      "application/xml" : "setsid firefox      " : ""     : "1>/dev/null 2>/dev/null" : "&"  
+      "text/html"       : "setsid firefox      " : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+      "text/xml"        : "setsid firefox      " : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+      "text"            : "vi"                   : "sudo" : ""                        : ""   
+      "image"           : "setsid xdg-open"      : ""     : "1>/dev/null 2>/dev/null" : "&"  
+      "inode/x-empty"   : "vi"                   : ""     : ""                        : ""
+    '
+    if test -z "$FISHINGZ_F_ACTIONS"
+      set -g FISHINGZ_F_ACTIONS    $____FISHINGZ_F_ACTIONS____
+    else
+      set -g FISHINGZ_F_ACTIONS    $FISHINGZ_F_ACTIONS   $____FISHINGZ_F_ACTIONS____
+    end
 
   end   # End of 'fishingz::load_settings'
 
@@ -37,8 +43,10 @@ function fishingz
     function fishingz::DB::load_settings
 
       # It represents how many times fishingz is updated when it is updated
-      test -z "$FISHINGZ_DB_REBUILD_THLD" ;and set -g  FISHINGZ_DB_REBUILD_THLD  50
+      test -z "$FISHINGZ_DB_REBLD_THLD_C" ;and set -g  FISHINGZ_DB_REBLD_THLD_C  50
+      test -z "$FISHINGZ_DB_REBLD_THLD_T" ;and set -g  FISHINGZ_DB_REBLD_THLD_T  86400
       test -z "$FISHINGZ_HISTSIZE"        ;and set -g  FISHINGZ_HISTSIZE         10
+      test -z "$FISHINGZ_HISTMAX"         ;and set -g  FISHINGZ_HISTMAX          1000
 
       # 30:black, 31:red, 32:green, 33:yellow, 34:blue, 35:magenta, 36:cyan, 37:white 
       test -z "$FISHINGZ_COLOR_D"   ;and  set -g  FISHINGZ_COLOR_D  32m       # [d] directory
@@ -49,29 +57,40 @@ function fishingz
       # fzf color option's
       test -z "$FISHINGZ_FZF_COLOR" ;and  set -g  FISHINGZ_FZF_COLOR "--color=hl:#ff00b0,bg+:#666666"
 
+      # fzf copy a line
+      test -z "$FISHINGZ_LINE_COPY_OPR"  ;and set -g FISHINGZ_LINE_COPY_OPR     "ctrl-k"
+
       # No searchable directories, when creating database
-      set -g    FISHINGZ_EXCLUDE_FS         "/lost+found/" \
-                                            "/snap/"       \
-                                            "/proc/"       \
-                                            "/sbin/"       \
-                                            "/media/"      \
-                                            "/root/"       \
-                                            "/opt/"        \
-                                            "/srv/"        \
-                                            "/cdrom/"      \
-                                            "/lib64/"      \
-                                            "/mnt/"        \
-                                            "/run/"        \
-                                            "/tmp/"        \
-                                            "/lib/"        \
-                                            "/dev/"        \
-                                            ""    # End of list
-  
-      set -g    FISHINGZ_EXCLUDE_DIR        "-o -name '.git'"     \
-                                            "-o -name '.cache'"   \
-                                            "-o -name '.svn'"     \
-                                            "-o -name '.CVS'"     \
-                                            ""    # End of list
+      set -l    ____FISHINGZ_EXCLUDE_FS____   "/lost+found" \
+                                              "/snap"       \
+                                              "/proc"       \
+                                              "/sbin"       \
+                                              "/media"      \
+                                              "/root"       \
+                                              "/opt"        \
+                                              "/srv"        \
+                                              "/cdrom"      \
+                                              "/run"        \
+                                              "/tmp"        \
+                                              "/dev"        \
+                                              ""    # End of list
+      if test -z "$FISHINGZ_EXCLUDE_FS"
+        set FISHINGZ_EXCLUDE_FS                         $____FISHINGZ_EXCLUDE_FS____
+      else 
+        set FISHINGZ_EXCLUDE_FS  $FISHINGZ_EXCLUDE_FS   $____FISHINGZ_EXCLUDE_FS____
+      end
+
+      # No searchable directories, when creating database
+      set -l    ____FISHINGZ_EXCLUDE_DIR____  ".git"     \
+                                              ".svn"     \
+                                              "CVS"      \
+                                              ""    # End of list
+
+      if test -z "$FISHINGZ_EXCLUDE_DIR"
+        set -g FISHINGZ_EXCLUDE_DIR                       $____FISHINGZ_EXCLUDE_DIR____
+      else
+        set -g FISHINGZ_EXCLUDE_DIR $FISHINGZ_EXCLUDE_DIR $____FISHINGZ_EXCLUDE_DIR____
+      end
 
       set -g    FISHINGZ_DB_PID            $FISHINGZ_UUID
       set -g    FISHINGZ_DB_TMPDIR         $FISHINGZ_WORKDIR
@@ -98,7 +117,7 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.7.0
+      set -g    FISHINGZ_DB_VERSION        1.8.0
       set -g    FISHINGZ_LOCKFILE          _____updating_____.lock
   
     end   # End of 'fishingz::DB::load_settings'
@@ -274,22 +293,22 @@ function fishingz
         tput sc
         if test ( which xclip )
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
-                                    --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                    sed -n "s|^\[[[:alpha:]]\]\(.*\)|\1|p" | xclip   ; tput rc )+abort' )
+                                    --bind "$FISHINGZ_LINE_COPY_OPR:execute-silent( echo -n {} | \
+                                    sed -n \"s|^\[[[:alpha:]]\]\(.*\)|\1|p\" | xclip   ; tput rc )+abort" )
         else if test ( which xsel )
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi -d'\t' --nth 2 \
-                                    --bind 'ctrl-e:execute-silent( echo -n {} | \
-                                    sed -n "s|^\[[[:alpha:]]\]\(.*\)|\1|p" | xsel -i ; tput rc )+abort' )
+                                    --bind "$FISHINGZ_LINE_COPY_OPR:execute-silent( echo -n {} | \
+                                    sed -n \"s|^\[[[:alpha:]]\]\(.*\)|\1|p\" | xsel -i ; tput rc )+abort" )
         else
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort --ansi -d'\t' --nth 2 )
         end
-      else
+      else  # [d] [f] [l] [M] are called independently
         if test ( which xclip )
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
-                                    --bind 'ctrl-e:execute-silent( echo -n {} | xclip )+abort' )
+                                    --bind "$FISHINGZ_LINE_COPY_OPR:execute-silent( echo -n {} | xclip )+abort" )
         else if test ( which xsel )
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint $argv | fzf --no-sort $FISHINGZ_FZF_COLOR --ansi \
-                                    --bind 'ctrl-e:execute-silent( echo -n {} | xsel -i )+abort' )
+                                    --bind "$FISHINGZ_LINE_COPY_OPR:execute-silent( echo -n {} | xsel -i )+abort" )
         else
           set ptr_RETURNED_PATH ( fishingz::DB::get_path::sort $basepoint | fzf --no-sort --ansi )
         end
@@ -297,32 +316,46 @@ function fishingz
   
       test ! -z "$tmpf" ;and rm -f $tmpf
   
-      #set ptr_RETURNED_PATH ( xclip -o | tr '\t' ' ' )
     end   # End of function fishingz::DB::get_path
   
   
     function fishingz::DB::auto_rebuild \
     --description "When the threshold is exceeded, the database is updated." \
-    --description "This threshold is held in $FISHINGZ_DB_REBUILD_THLD."
+    --description "This threshold is held in $FISHINGZ_DB_REBLD_THLD_C."
 
-      # If there is no threshold or 0.
-      if test -z "$FISHINGZ_DB_REBUILD_THLD" ;or test "$FISHINGZ_DB_REBUILD_THLD" = 0
+      # If there is no threshold or 0, don't re-build.
+      if test -z "$FISHINGZ_DB_REBLD_THLD_C" ;or test "$FISHINGZ_DB_REBLD_THLD_C" = 0
         rm -f $FISHINGZ_AVATAR
         return 0
       end
 
       echo (date "+%s") >> $FISHINGZ_DB_CALLS
       set -l cur ( cat $FISHINGZ_DB_CALLS 2>/dev/null | wc -l )
-      set -l mod ( echo "$cur % $FISHINGZ_DB_REBUILD_THLD" | bc )
+      set -l mod ( echo "$cur % $FISHINGZ_DB_REBLD_THLD_C" | bc )
   
       if test $mod -eq 0
         rm -f $FISHINGZ_DB_CALLS
         # Create a lock file so that it will not be executed multiple times
         set -g FISHINGZ_AVATAR_MODE "ON"
         setsid nice -n 20 fish $FISHINGZ_AVATAR -R &
-      else
-        rm -f $FISHINGZ_AVATAR
+        return 0
       end
+      
+      # Rebuild the DB when the predetermined time has elapsed
+      if test ! -z $FISHINGZ_DB_REBLD_THLD_T
+        set -l begin_sec  ( head -n 1 $FISHINGZ_DB_CALLS )
+        set -l end_sec    ( tail -n 1 $FISHINGZ_DB_CALLS )
+        set -l distance   ( expr $end_sec - $begin_sec )
+        if test $distance -ge $FISHINGZ_DB_REBLD_THLD_T
+          rm -f $FISHINGZ_DB_CALLS
+          # Create a lock file so that it will not be executed multiple times
+          set -g FISHINGZ_AVATAR_MODE "ON"
+          setsid nice -n 20 fish $FISHINGZ_AVATAR -R &
+          return 0
+        end
+      end
+
+      rm -f $FISHINGZ_AVATAR
     end
   
     function fishingz::DB::add_mru \
@@ -344,6 +377,11 @@ function fishingz
       end
   
       echo "$argv" >> $FISHINGZ_DB_MRU_PATH
+      set -l linenum ( cat $FISHINGZ_DB_MRU_PATH | wc -l )
+      if test $linenum -gt $FISHINGZ_HISTMAX
+        set -l distance ( expr $linenum - $FISHINGZ_HISTMAX )
+        sed -i -n "$distance,\$p" $FISHINGZ_DB_MRU_PATH
+      end
       return 0
     end
   
@@ -352,14 +390,20 @@ function fishingz
     
       set -l script     "$FISHINGZ_DB_TMPDIR/find_d.fish"
       set -l output     $argv[1]
-      set -l omission   $FISHINGZ_EXCLUDE_DIR
-    
+      set -l omission   
+
       test -z "$output" ;and echo '$output is NULL at '(status function) >&2 ;and exit 2
     
       # set internal parameters and directories
       set -l workdir    "$FISHINGZ_DB_TMPDIR/DIR/PARTS"
       test ! -d "$workdir" ;and mkdir -p $workdir
     
+      # build argument that is exclude directory
+      for i in ( seq 1 ( count $FISHINGZ_EXCLUDE_DIR ) )
+        test ! -z "$FISHINGZ_EXCLUDE_DIR[$i]" ;
+          and set omission $omission " -o -name " $FISHINGZ_EXCLUDE_DIR[$i]
+      end
+
       # prepare for executing 'find' in parallel
       echo  "set -l num 0"                                                  >> $script
       echo  "set -l i   0"                                                  >> $script
@@ -589,11 +633,6 @@ function fishingz
 
   function fishingz::command --no-scope-shadowing
   
-    set -l SUDO
-
-    test ( string match -r -i "\A[t|e|1]" "$FISHINGZ_TOGGLE_USE_SUDO" ) ;
-      and set SUDO "sudo"
-
     function fishingz::command::opr_d --no-scope-shadowing \
     --description "When [d] is selected on the list"
 
@@ -615,54 +654,49 @@ function fishingz
     function fishingz::command::opr_f --no-scope-shadowing \
     --description "When [f] is selected on the list"
 
-      set -l  path  $argv[1]
-      test ! -f $path ;and echo "$path: No such file" >&2
-      set -l  ftype ( file -b -i $path )
+      set -l  act_path  $argv[1]
+      test ! -f $act_path ;and echo "$act_path: No such file" >&2
+      set -l  ret   ( file -b -i $act_path )
   
-      switch $ftype
+      set -l  actions ( string trim $FISHINGZ_F_ACTIONS )
+      set -l  act_type
+      set -l  act_app
+      set -l  act_sudo
+      set -l  act_eoff
+      set -l  act_bg
 
-        case "text/html*"
-          if test ! -z "$FISHINGZ_F_HTML_CMD"
-            set ptr_EXECLINE "$FISHINGZ_F_CMD $path"
-            eval $FISHINGZ_F_CMD $path ;
-          else if test ( which $FISHINGZ_F_HTML_CMD )
-            set ptr_EXECLINE "setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &"
-            setsid $FISHINGZ_F_HTML_CMD $path 2>/dev/null &
-          else
-            set ptr_EXECLINE "$FISHINGZ_F_CMD $path"
-            eval $FISHINGZ_F_CMD $path ;
-          end
-        case "text/*"
-          if test -w $path 
-            eval $FISHINGZ_F_CMD $path ;
-            set ptr_EXECLINE "$FISHINGZ_F_CMD $path"
-          else
-            eval $SUDO $FISHINGZ_F_CMD $path
-            set ptr_EXECLINE "$SUDO $FISHINGZ_F_CMD $path"
-          end
-  
-        case "application/x-executable*charset=binary"  # binary file
-          if test ( string match -r -i "\A[t|e|1]" "$FISHINGZ_TOGGLE_EXEC_MODE" )
-            eval builtin string ' ' "fish" "-c" "$path" 
-            set ptr_EXECLINE "fish -c $path"
-          else
-            echo 'executable mode off' >&2
-          end
-  
-        case "application/x-sharedlib"
-            echo "Sorry, could not open $path"
+      for i in (seq 1 (count $actions) )
+        set act_type ( string trim (echo $actions[$i] | cut -d':' -f1) | \
+                       sed -e s'/"\(.*\)"/\1/g' -e s'/\'\(.*\)\'/\1/g' )
+        set act_app  ( string trim (echo $actions[$i] | cut -d':' -f2) | \
+                       sed -e s'/"\(.*\)"/\1/g' -e s'/\'\(.*\)\'/\1/g' )
 
-        case "*x-empty*"  # empty file
-          echo "$path: empty file..." >&2
-  
-        case "*"
-          if test ! -z "$FISHINGZ_JORKER"
-            eval $FISHINGZ_JORKER $path 
-            set ptr_EXECLINE "$FISHINGZ_JORKER $path"
+        #echo "[$act_type] @@@@ $ret @@@@"
+
+        if test ( string match -r -i "$act_type*" "$ret" )
+          set act_sudo ( string trim (echo $actions[$i] | cut -d':' -f3) | \
+                         sed -e s'/"\(.*\)"/\1/g' -e s'/\'\(.*\)\'/\1/g' )
+          set act_eoff ( string trim (echo $actions[$i] | cut -d':' -f4) | \
+                         sed -e s'/"\(.*\)"/\1/g' -e s'/\'\(.*\)\'/\1/g' )
+          set act_bg   ( string trim (echo $actions[$i] | cut -d':' -f5) | \
+                         sed -e s'/"\(.*\)"/\1/g' -e s'/\'\(.*\)\'/\1/g' )
+
+          if test -w $act_path 
+            eval           $act_app $act_path $act_eoff $act_bg
+            set ptr_EXECLINE "$act_sudo $act_app $act_path $act_eoff $act_bg"
           else
-            echo "$path: no action" >&2
+            eval $act_sudo $act_app $act_path $act_eoff $act_bg
+            set ptr_EXECLINE "$act_sudo $act_app $act_path $act_eoff $act_bg"
           end
-      end 
+
+          return 0
+        end
+      end
+
+      echo "$path: no action" >&2
+
+      return 0
+
     end  # End of 'fishingz::command::opr_f'
   
 
@@ -726,20 +760,17 @@ function fishingz
 
   function fishingz::verify_settings
 
-    test -z "$FISHINGZ_TOGGLE_USE_SUDO" ;
-      and set FISHINGZ_TOGGLE_USE_SUDO 0
-
-    test -z "$FISHINGZ_F_CMD" ;
-      and echo 'Error: $FISHINGZ_F_CMD is empty'    >&2 ;and exit 2
+    test -z "$FISHINGZ_F_ACTIONS" ;
+      and echo 'Error: $FISHINGZ_F_ACTIONS is empty'  >&2 ;and exit 2
 
     test -z "$FISHINGZ_D_CMD" ;
-      and echo 'Error: $FISHINGZ_D_CMD is empty'    >&2 ;and exit 2
+      and echo 'Error: $FISHINGZ_D_CMD is empty'      >&2 ;and exit 2
 
     test -z "$FISHINGZ_WORKDIR" ;
-      and echo 'Error: $FISHINGZ_WORKDIR is empty'  >&2 ;and exit 2
+      and echo 'Error: $FISHINGZ_WORKDIR is empty'    >&2 ;and exit 2
 
     test -z "$FISHINGZ_USER_AREA" ;
-      and echo 'Error: $FISHINGZ_USER_AREA is empty'>&2 ;and exit 2
+      and echo 'Error: $FISHINGZ_USER_AREA is empty'  >&2 ;and exit 2
 
   end
 
