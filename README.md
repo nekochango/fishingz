@@ -99,9 +99,18 @@ Access is made based on path information collected in advance (hereinafter refer
 ```  
 
 ### :tropical_fish:　　1.　Install fishingz
+<b>by GitHub</b>
 ```console  
 git clone https://github.com/nekochango/fishingz  
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
+```
+```console
+source $HOME/.config/fish/functions/fishingz.fish
+```
+
+<b>by fisherman</b>
+```console  
+fisherman nekochango/fishingz
 ```
 ```console
 source $HOME/.config/fish/functions/fishingz.fish
