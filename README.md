@@ -49,15 +49,15 @@ Access is made based on path information collected in advance (hereinafter refer
 　
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Demo(1)">
-### Move to the / etc / apache2 / sites-enabled directory
+### Move to the /etc/apache2/sites-enabled directory
 #### :fish: 1　Open DB
-+ Open the DB by entering C - u C - u from the command line. (Key can be changed)   
++ Open the DB by entering C-u C-u from the command line. (Key can be changed)   
 ![open_a_locatedb](https://user-images.githubusercontent.com/39640214/41501398-9ff0be4e-71de-11e8-8720-41733d6c0f7e.gif)
 
 #### :fish: 2　Select a path
-+ We narrow down as / etcapac2site by fzf.    
-+ Select the target <b> [d] / etc / apache 2 / sites - enabled </b>.    
-+ <B> cd / etc / apache 2 / sites-enabled </b> was executed with the above operation  
++ We narrow down as <b>/etcapac2site</b> by fzf.    
++ Select the target <b> [d] /etc/apache2/sites - enabled </b>.    
++ <B> cd /etc/apache2/sites-enabled </b> was executed with the above operation  
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
 
 　
@@ -65,7 +65,7 @@ Access is made based on path information collected in advance (hereinafter refer
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Demo(2)">
 ### Open /home/neko/.local/share/fish/generate_completions/fzf-tmux.fish with nvim-qt
 #### :fish: 1　Open DB for file
-+ Open the file DB by entering C - u C - f from the command line. (Key can be changed)
++ Open the file DB by entering C-u C-f from the command line. (Key can be changed)
 
 #### :fish: 2　Select a path
 + Filter by fzf as fishfzf.fish.
@@ -80,8 +80,8 @@ Access is made based on path information collected in advance (hereinafter refer
 + Open Directory for DB by entering C-u C-i from the command line. (Key can be changed) 
 
 #### :fish: 2　Select a path
-+ Move the cursor to / etc / systemd
-+ Press Ctrl-k to copy / etc / systemd to clipboard (key can be changed)
++ Move the cursor to /etc/systemd
++ Press Ctrl-k to copy /etc/systemd to clipboard (key can be changed)
 + Paste to the console with Shift-Insert
 ![ctrlk](https://user-images.githubusercontent.com/39640214/41803236-c112332c-76c1-11e8-920a-c986c656e75a.gif)
 
