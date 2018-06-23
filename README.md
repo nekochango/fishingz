@@ -192,11 +192,34 @@ In the initial setting, the following file system is excluded from searching.
 /srv 　/cdrom 　/lib64 　/mnt 　/run 　/tmp 　/lib 　/dev
 ```
 
+　
+
+### :tropical_fish:　　3.　Register the application for each file type
+Register the application you want to use for each file type.
+The file type refers to the result of "file -b -i".
+In addition, it will be executed from the application of the pattern corresponding to the above.
+***$HOME/.fishingz/init.fish***  
+```
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# Command to execute in case of [f]
+# file-type : command : use sudo when readonly file : redirect : background 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+set -g  FISHINGZ_F_ACTIONS  '
+  "text/html"       : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "application/xml" : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "text/html"       : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+  "text/xml"        : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+  "text"            : "nvim"                 : "sudo" : ""                        : ""   
+  "image"           : "setsid xdg-open"      : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "inode/x-empty"   : "nvim"                 : ""     : ""                        : ""
+'
+```
+
 With this you can use fishingz.
 
 　
 
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Advanced%20Setup">
+## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Advanced%20Settings">
 
 
 The following can be done as necessary.
@@ -227,7 +250,6 @@ When setting the above table, please describe as follows.
 　
 
 ***$HOME/.fishingz/init.fish***  
-
 ```
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # Command to execute in case of [f]
