@@ -134,7 +134,8 @@ autoreconf		# create configuration files
 make			# build the binary
 ```
 
-If you have administrator privileges, install with <b> apt-get install </ b>. 
+If you have administrator privileges, install with 
+apt-get install </ b>. 
 ```console
 apt-get install -y xclip
 ```
