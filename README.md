@@ -56,8 +56,8 @@ Access is made based on path information collected in advance (hereinafter refer
 
 #### :fish: 2　Select a path
 + We narrow down as / etcapac2site by fzf.    
-+ Select the target <b> [d] / etc / apache 2 / sites - enabled </ b>.    
-+ <B> cd / etc / apache 2 / sites-enabled </ b> was executed with the above operation  
++ Select the target <b> [d] / etc / apache 2 / sites - enabled </b>.    
++ <B> cd / etc / apache 2 / sites-enabled </b> was executed with the above operation  
 ![select_dir](https://user-images.githubusercontent.com/39640214/41502097-6ecb9834-71ed-11e8-804e-0cdfd8f8f102.gif)
 
 　
@@ -69,7 +69,7 @@ Access is made based on path information collected in advance (hereinafter refer
 
 #### :fish: 2　Select a path
 + Filter by fzf as fishfzf.fish.
-+ Select the target <b> /home/neko/.local/share/fish/generate_completions/fzf-tmux.fish </ b>.  
++ Select the target <b> /home/neko/.local/share/fish/generate_completions/fzf-tmux.fish </b>.  
 ![demo_f](https://user-images.githubusercontent.com/39640214/41606895-b448e1da-741f-11e8-9388-0b3b85ba016d.gif)
 
 　
