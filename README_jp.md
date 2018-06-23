@@ -99,6 +99,7 @@
 ```  
 
 ### :tropical_fish:　　1.　fishingz のインストールをする
+<b>by GitHub</b>
 ```console  
 git clone https://github.com/nekochango/fishingz  
 cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.  
@@ -106,6 +107,15 @@ cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.
 ```console
 source $HOME/.config/fish/functions/fishingz.fish
 ```
+
+<b>by fisherman</b>
+```console  
+fisherman nekochango/fishingz
+```
+```console
+source $HOME/.config/fish/functions/fishingz.fish
+```
+
 
 ### :tropical_fish:　　2.　fzf のインストールをする
 - [fzf　:mag:](https://github.com/junegunn/fzf#using-git)
