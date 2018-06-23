@@ -206,7 +206,7 @@ The following can be done as necessary.
 
 The configuration file is $ HOME / .fishingz / init.fish.
 
-|変数|処理内容|デフォルト値|
+|Variable name|Processing content|Default value|
 |---|:--|:--|
 |FISHINGZ_F_ACTIONS|Define the application you want to use according to the file type||
 |FISHINGZ_DB_REBLD_THLD_C|Number of times fishingz used to rebuild DB|50|
