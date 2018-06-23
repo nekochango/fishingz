@@ -227,6 +227,7 @@ When setting the above table, please describe as follows.
 　
 
 ***$HOME/.fishingz/init.fish***  
+
 ```
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # Command to execute in case of [f]
