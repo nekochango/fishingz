@@ -231,7 +231,7 @@ The configuration file is $ HOME/.fishingz/init.fish.
 |FISHINGZ_F_ACTIONS|Define the application you want to use according to the file type||
 |FISHINGZ_DB_REBLD_THLD_C|Number of times fishingz used to rebuild DB|50|
 |FISHINGZ_DB_REBLD_THLD_T|Elapsed time to DB reconfiguration (sec)|86400(sec)=1day|
-|FISHINGZ_NPROC_ON_REBUILD|Number of CPUs used for DB reconstruction|1個|
+|FISHINGZ_NPROC_ON_REBUILD|Number of CPUs used for DB reconstruction|1|
 |FISHINGZ_HISTMAX|Number of MRUs to keep|1000|
 |FISHINGZ_COLOR_D|Display color of directory when opening DB|32m (green)|
 |FISHINGZ_COLOR_F|Display color of file when opening DB|36m (cyan)|
