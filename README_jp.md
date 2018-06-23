@@ -186,7 +186,7 @@ fishingz -i
 ```
 　
 
-### :tropical_fish:　　3.　Register the application for each file type 
+### :tropical_fish:　　3.　ファイル種別に応じた使用するアプリを登録する 
 各ファイルタイプに使用するアプリケーションを登録します。  
 ファイルタイプは "file-b-i"の結果に該当します。  
 なお、ファイル選択時は該当したアプリケーションから優先して実行されます。  
