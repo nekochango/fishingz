@@ -135,7 +135,7 @@ make			# build the binary
 ```
 
 If you have administrator privileges, install with 
-apt-get install </ b>. 
+apt-get install </b>. 
 ```console
 apt-get install -y xclip
 ```
@@ -204,7 +204,7 @@ The following can be done as necessary.
 
 ### :dolphin:　　1.　Set up fishingz
 
-The configuration file is $ HOME / .fishingz / init.fish.
+The configuration file is $ HOME/.fishingz/init.fish.
 
 |Variable name|Processing content|Default value|
 |---|:--|:--|
