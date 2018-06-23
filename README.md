@@ -186,10 +186,10 @@ In the initial setting, the following file system is excluded from searching.
 
 　
 
-### :tropical_fish:　　3.　Register the application for each file type
-Register the application you want to use for each file type.
-The file type refers to the result of "file -b -i".
-In addition, it will be executed from the application of the pattern corresponding to the above.
+### :tropical_fish:　　3.　Register the application for each file type  
+Register the application you want to use for each file type.  
+The file type refers to the result of "file -b -i".  
+In addition, it will be executed from the application of the pattern corresponding to the above.  
 ***$HOME/.fishingz/init.fish***  
 ```
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
