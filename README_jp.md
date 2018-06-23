@@ -108,13 +108,6 @@ cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.
 source $HOME/.config/fish/functions/fishingz.fish
 ```
 
-<b>by fisherman</b>
-```console  
-fisherman nekochango/fishingz
-```
-```console
-source $HOME/.config/fish/functions/fishingz.fish
-```
 
 
 ### :tropical_fish:　　2.　fzf のインストールをする
