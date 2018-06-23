@@ -190,6 +190,9 @@ In the initial setting, the following file system is excluded from searching.
 Register the application you want to use for each file type.  
 The file type refers to the result of "file -b -i".  
 In addition, it will be executed from the application of the pattern corresponding to the above.  
+
+
+
 ***$HOME/.fishingz/init.fish***  
 ```
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -207,7 +210,9 @@ set -g  FISHINGZ_F_ACTIONS  '
 '
 ```
 
-With this you can use fishingz.
+　
+
+<b>**With this you can use fishingz.**</b>
 
 　
 
