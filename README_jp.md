@@ -194,9 +194,9 @@ fishingz -i
 　
 
 ### :tropical_fish:　　3.　Register the application for each file type 
-各ファイルタイプに使用するアプリケーションを登録します。
-ファイルタイプは "file-b-i"の結果に該当します。
-なお、ファイル選択時は該当したアプリケーションから優先して実行されます。
+各ファイルタイプに使用するアプリケーションを登録します。  
+ファイルタイプは "file-b-i"の結果に該当します。  
+なお、ファイル選択時は該当したアプリケーションから優先して実行されます。  
 　
 
 ***$HOME/.fishingz/init.fish***  
@@ -221,7 +221,7 @@ set -g  FISHINGZ_F_ACTIONS  '
 
 　
 
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Advanced%20Setup">
+## <img src="http://placehold.jp/24/39aaff/ffffff/280x40.png?text=Advanced%20Settings">
 
 
 以下は必要に応じて行えば良い。
