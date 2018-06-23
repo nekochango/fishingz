@@ -108,14 +108,6 @@ cp -p ./fishingz/fishingz.fish $HOME/.config/fish/function/.
 source $HOME/.config/fish/functions/fishingz.fish
 ```
 
-<b>by fisherman</b>
-```console  
-fisherman nekochango/fishingz
-```
-```console
-source $HOME/.config/fish/functions/fishingz.fish
-```
-
 ### :tropical_fish:　　2.　Install fzf
 - [fzf　:mag:](https://github.com/junegunn/fzf#using-git)
 ```console
@@ -219,7 +211,7 @@ With this you can use fishingz.
 
 　
 
-## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Advanced%20Settings">
+## <img src="http://placehold.jp/24/39aaff/ffffff/280x40.png?text=Advanced%20Settings">
 
 
 The following can be done as necessary.
