@@ -191,7 +191,32 @@ fishingz -i
 /lost+found 　/snap 　/proc 　/sbin 　/media 　/root 　/opt
 /srv 　/cdrom 　/lib64 　/mnt 　/run 　/tmp 　/lib 　/dev
 ```
+　
 
+### :tropical_fish:　　3.　Register the application for each file type 
+各ファイルタイプに使用するアプリケーションを登録します。
+ファイルタイプは "file-b-i"の結果に該当します。
+なお、ファイル選択時は該当したアプリケーションから優先して実行されます。
+　
+
+***$HOME/.fishingz/init.fish***  
+```
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# Command to execute in case of [f]
+# file-type : command : use sudo when readonly file : redirect : background 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+set -g  FISHINGZ_F_ACTIONS  '
+  "text/html"       : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "application/xml" : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "text/html"       : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+  "text/xml"        : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+  "text"            : "nvim"                 : "sudo" : ""                        : ""   
+  "image"           : "setsid xdg-open"      : ""     : "1>/dev/null 2>/dev/null" : "&"  
+  "inode/x-empty"   : "nvim"                 : ""     : ""                        : ""
+'
+```
+
+　
 以上で fishingz が使用可能になった。
 
 　
