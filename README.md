@@ -295,7 +295,7 @@ set -g FISHINGZ_NPROC_ON_REBUILD  1
 set -g  FISHINGZ_COLOR_D  32m       # [d] directory
 set -g  FISHINGZ_COLOR_F  36m       # [f] file
 set -g  FISHINGZ_COLOR_L  35m       # [l] symlink
-set -g  FISHINGZ_COLOR_H  33m       # [H] MRU
+set -g  FISHINGZ_COLOR_M  33m       # [M] MRU
 set -g  FISHINGZ_FZF_COLOR "--color=hl:#ff00b0,bg+:#666666"
 ```
 
