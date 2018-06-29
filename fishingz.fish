@@ -117,7 +117,7 @@ function fishingz
                                             "$FISHINGZ_DB_FILE_PATH" \
                                             "$FISHINGZ_DB_LINK_PATH"
   
-      set -g    FISHINGZ_DB_VERSION        1.8.0
+      set -g    FISHINGZ_DB_VERSION        1.9.0
       set -g    FISHINGZ_LOCKFILE          _____updating_____.lock
   
     end   # End of 'fishingz::DB::load_settings'
@@ -626,6 +626,11 @@ function fishingz
         fishingz::DB::pipeline --save-mru $argv
       case  "-g"    # Get path accessed by 'fishingz'
         fishingz::DB::pipeline --get-path $argv[2..-1]
+      case  "-l"    # load DB settings only
+        fishingz::DB::load_settings
+        set -g FISHINGZ_DB_FILES $FISHINGZ_DB_DIR_PATH    \
+                                 $FISHINGZ_DB_FILE_PATH   \
+                                 $FISHINGZ_DB_LINK_PATH
     end
   
   end   # End of 'fishingz::DB '
@@ -844,6 +849,8 @@ function fishingz
     fishingz::stream --init-only
     fishingz::DB $argv
     fishingz::stream --stop-only
+  else if test $argv[1] = "-l"
+    fishingz::DB $argv
   end
 
 end   # End of 'func fishingz'
