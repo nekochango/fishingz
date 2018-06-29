@@ -46,7 +46,12 @@ Access is made based on path information collected in advance (hereinafter refer
 +　　- Scheduler registration such as cron, at etc. is unnecessary because the update opportunity is simple
 ```
 
-　
+### :whale: File can be searched from DB by sonar command which is a subset
+```diff
++ After DB construction, you can search files from DB using sonar command.
++　　- The usage of the sonar command is the same as egrep (just calls egrep)
+```
+
 
 ## <img src="http://placehold.jp/24/39aaff/ffffff/180x40.png?text=Demo(1)">
 ### Move to the /etc/apache2/sites-enabled directory
