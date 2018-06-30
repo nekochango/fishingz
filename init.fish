@@ -4,12 +4,11 @@
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 set -g  FISHINGZ_F_ACTIONS  '
   "text/html"       : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
-  "application/xml" : "setsid google-chrome" : ""     : "1>/dev/null 2>/dev/null" : "&"  
   "text/html"       : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
-  "text/xml"        : "setsid google-chrome" : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
-  "text"            : "nvim"                 : "sudo" : ""                        : ""   
+  "text/xml"        : "vi"                   : "sudo" : "1>/dev/null 2>/dev/null" : "&"  
+  "text"            : "vi"                   : "sudo" : ""                        : ""   
   "image"           : "setsid xdg-open"      : ""     : "1>/dev/null 2>/dev/null" : "&"  
-  "inode/x-empty"   : "nvim"                 : ""     : ""                        : ""
+  "inode/x-empty"   : "vi"                   : ""     : ""                        : ""
 '
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
