@@ -1,5 +1,3 @@
-#!/usr/bin/env fish
-
 function sonar \
 --description "locate the file or directory name from DB for fishingz"
 
